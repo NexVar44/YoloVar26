@@ -1,2 +1,6 @@
-# YoloVarv6
-App de valoración de plan familiar Agosto 2026
+# YoloVar26
+
+A Pen created on CodePen.
+
+Original URL: [https://codepen.io/NexVar44/pen/NPddNoW](https://codepen.io/NexVar44/pen/NPddNoW).
+
