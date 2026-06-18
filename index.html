@@ -1,430 +1,427 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>YoloVar26</title>
+  <link rel="stylesheet" href="./style.css">
+</head>
 
-  <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>YoloVar26</title>
-    <link rel="stylesheet" href="./style.css">
-
-  </head>
-    
-  <body>
+<body>
   <section class="hero-cover">
-  <div class="hero-overlay"></div>
+    <div class="hero-overlay"></div>
 
-  <div class="hero-content">
-    <p class="hero-kicker">YoloVar26</p>
-    <h1>Presupuesto familiar para ver el eclipse en León en autocaravana</h1>
-    <p>
-      Una calculadora para estimar el coste aproximado del viaje, usando valores investigados como referencia y permitiendo ajustar los datos según el criterio de cada familia.
-    </p>
-  </div>
+    <div class="hero-content">
+      <p class="hero-kicker">YoloVar26</p>
+      <h1>Presupuesto familiar para ver el eclipse en León en autocaravana</h1>
+      <p>
+        Una calculadora para estimar el coste aproximado del viaje, usando valores investigados como referencia y permitiendo ajustar los datos según el criterio de cada familia.
+      </p>
+    </div>
 
-  <button class="hero-btn" type="button" id="startBtn">Empezar simulación</button>
-</section>
+    <button class="hero-btn" type="button" id="startBtn">Empezar simulación</button>
+  </section>
 
-<section class="app-section" id="app">
-  <main class="app-shell">
-    <header class="app-header">
-      <p class="eyebrow">Asturias → León · Agosto 2026</p>
-      <h2>Simulador de gastos</h2>
-    </header>
+  <section class="app-section" id="app">
+    <main class="app-shell">
+      <header class="app-header">
+        <p class="eyebrow">Asturias → León · Agosto 2026</p>
+        <h2>Simulador de gastos</h2>
+      </header>
 
-    <nav class="step-nav" aria-label="Pasos de la simulación">
-      <button class="step-tab active" type="button" data-step="1">1 · DATOS</button>
-      <button class="step-tab" type="button" data-step="2">2 · GASTOS</button>
-      <button class="step-tab" type="button" data-step="3">3 · RESULTADOS</button>
-    </nav>
+      <nav class="step-nav" aria-label="Pasos de la simulación">
+        <button class="step-tab active" type="button" data-step="1">1 · DATOS</button>
+        <button class="step-tab" type="button" data-step="2">2 · GASTOS</button>
+        <button class="step-tab" type="button" data-step="3">3 · RESULTADOS</button>
+      </nav>
 
-    <p class="error-message" id="formError" hidden></p>
+      <p class="error-message" id="formError" hidden></p>
 
-    <section class="step-panel active" data-panel="1">
-      <article class="compact-note">
-        Puedes ajustar los campos: adultos, niños, autocaravana, seguro, combustible, comidas, camping y otros gastos.
-      </article>
+      <section class="step-panel active" data-panel="1">
+        <article class="compact-note">
+          Puedes ajustar los campos: adultos, niños, autocaravana, seguro, combustible, comidas, camping y otros gastos.
+        </article>
 
-      <article class="card compact-card">
-        <h3>Datos base</h3>
-
-        <div class="mini-grid">
-          <label>
-            Adultos
-            <input id="adults" type="number" min="1" step="1" value="5" required>
-          </label>
-
-          <label>
-            Niños
-            <input id="children" type="number" min="0" step="1" value="2" required>
-          </label>
-        </div>
-      </article>
-
-      <article class="card">
-        <h3>Autocaravana y duración</h3>
-
-        <div class="option-grid">
-          <label class="option-card">
-            <input type="radio" name="vehicleMode" value="selected" checked>
-            <span>
-              <strong>Autocaravana investigada</strong>
-              <small>Reserva mínima: 3 días</small>
-              <small>Alquiler 3 días: <b id="selectedRental3Label">401,88 €</b></small>
-            </span>
-          </label>
-
-          <label class="option-card">
-            <input type="radio" name="vehicleMode" value="other">
-            <span>
-              <strong>Otra autocaravana</strong>
-              <small>Para comparar una opción que permita 2 días</small>
-              <small>Introduce tus datos investigados</small>
-            </span>
-          </label>
-        </div>
-
-        <div id="selectedVehicleBox" class="sub-card">
-          <p class="helper-text">
-            La autocaravana seleccionada exige una reserva mínima de 3 días.
-          </p>
-          <input type="hidden" name="tripDays" value="3" checked>
-          <div class="reference-box">
-            <span>Duración:</span>
-            <strong>3 días / 2 noches</strong>
-          </div>
-        </div>
-
-        <div id="otherVehicleBox" class="sub-card" hidden>
-          <label>
-            Nombre o referencia de la otra autocaravana
-            <input id="otherVehicleName" type="text" placeholder="Ejemplo: Autocaravana alternativa investigada">
-          </label>
+        <article class="card compact-card">
+          <h3>Datos base</h3>
 
           <div class="mini-grid">
             <label>
-              Alquiler 2 días (€)
-              <input id="otherRental2" type="number" min="0" step="0.01" placeholder="Ejemplo: 280">
+              Adultos
+              <input id="adults" type="number" min="1" step="1" value="5" required>
             </label>
 
             <label>
-              Alquiler 3 días (€)
-              <input id="otherRental3" type="number" min="0" step="0.01" placeholder="Ejemplo: 390">
+              Niños
+              <input id="children" type="number" min="0" step="1" value="2" required>
             </label>
-          </div>
-
-          <p class="field-title">Duración para esta alternativa</p>
-
-          <div class="option-grid">
-            <label class="option-card compact-option">
-              <input type="radio" name="otherTripDays" value="2" checked>
-              <span>
-                <strong>2 días</strong>
-                <small>Usa alquiler 2 días</small>
-              </span>
-            </label>
-
-            <label class="option-card compact-option">
-              <input type="radio" name="otherTripDays" value="3">
-              <span>
-                <strong>3 días</strong>
-                <small>Usa alquiler 3 días</small>
-              </span>
-            </label>
-          </div>
-        </div>
-      </article>
-
-      <article class="card">
-        <h3>Seguro</h3>
-
-        <div class="option-grid">
-          <label class="option-card">
-            <input type="radio" name="insurancePlan" value="basic">
-            <span>
-              <strong>Seguro básico</strong>
-              <small>6 €/día</small>
-              <small>Fianza bloqueada: <b>1.500 €</b></small>
-            </span>
-          </label>
-
-          <label class="option-card">
-            <input type="radio" name="insurancePlan" value="comfort" checked>
-            <span>
-              <strong>Seguro confort</strong>
-              <small>11,99 €/día</small>
-              <small>Fianza bloqueada: <b>750 €</b></small>
-            </span>
-          </label>
-        </div>
-
-        <div class="notice-card inline">
-          <strong id="depositIntroTitle">Fianza bloqueada</strong>
-          <p>
-            La fianza no es un gasto consumido del viaje. Es un importe que se bloquea temporalmente en la cuenta bancaria de un viajero. Si hay daños, se descuenta el coste de reparación hasta un máximo del 100% de la fianza seleccionada.
-          </p>
-        </div>
-      </article>
-
-      <div class="step-actions single">
-        <button class="btn primary" type="button" id="step1NextBtn">Siguiente</button>
-      </div>
-    </section>
-
-    <section class="step-panel" data-panel="2">
-      <article class="card">
-        <h3>Presupuesto orientativo</h3>
-
-        <div class="preset-top-grid">
-          <button class="preset-btn active" type="button" data-preset="low">Gasto bajo</button>
-          <button class="preset-btn" type="button" data-preset="medium">Gasto medio</button>
-          <button class="preset-btn" type="button" data-preset="high">Gasto alto</button>
-        </div>
-
-        <button class="preset-btn manual full-width" type="button" data-preset="manual">Editar detalles</button>
-
-        <div class="preset-detail" id="presetDetail"></div>
-      </article>
-
-      <div id="manualDetails" hidden>
-        <article class="card">
-          <h3>Combustible</h3>
-
-          <div class="option-grid">
-            <label class="option-card">
-              <input type="radio" name="fuelMode" value="reference" checked>
-              <span>
-                <strong>Usar referencia</strong>
-                <small>306 km · 10 L/100 km · 1,60 €/L</small>
-              </span>
-            </label>
-
-            <label class="option-card">
-              <input type="radio" name="fuelMode" value="manual">
-              <span>
-                <strong>Introducir manualmente</strong>
-                <small>Para ruta diferente o más kilómetros en León</small>
-              </span>
-            </label>
-          </div>
-
-          <div id="fuelManualFields" class="sub-card" hidden>
-            <div class="mini-grid">
-              <label>
-                Km totales
-                <input id="manualKm" type="number" min="0" step="1" value="306">
-              </label>
-
-              <label>
-                Consumo L/100 km
-                <input id="manualConsumption" type="number" min="0" step="0.1" value="10">
-              </label>
-
-              <label>
-                Diésel €/L
-                <input id="manualDiesel" type="number" min="0" step="0.01" value="1.60">
-              </label>
-
-              <label>
-                O gasto total (€)
-                <input id="manualFuelTotal" type="number" min="0" step="0.01" placeholder="Opcional">
-              </label>
-            </div>
           </div>
         </article>
 
         <article class="card">
-          <h3>Comidas</h3>
+          <h3>Autocaravana y duración</h3>
 
           <div class="option-grid">
             <label class="option-card">
-              <input type="radio" name="foodMode" value="reference" checked>
+              <input type="radio" name="vehicleMode" value="selected" checked>
               <span>
-                <strong>Usar referencia</strong>
-                <small>4 comidas/día · 5 €/persona</small>
+                <strong>Autocaravana investigada</strong>
+                <small>Reserva mínima: 3 días</small>
+                <small>Alquiler 3 días: <b id="selectedRental3Label">401,88 €</b></small>
               </span>
             </label>
 
             <label class="option-card">
-              <input type="radio" name="foodMode" value="manual">
+              <input type="radio" name="vehicleMode" value="other">
               <span>
-                <strong>Introducir manualmente</strong>
-                <small>Ajustar comidas o coste por persona</small>
+                <strong>Otra autocaravana</strong>
+                <small>Para comparar una opción que permita 2 días</small>
+                <small>Introduce tus datos investigados</small>
               </span>
             </label>
           </div>
 
-          <div id="foodManualFields" class="sub-card" hidden>
-            <div class="mini-grid">
-              <label>
-                Comidas por día
-                <input id="mealsPerDay" type="number" min="3" max="5" step="1" value="4">
-              </label>
-
-              <label>
-                Coste comida/persona (€)
-                <input id="mealCost" type="number" min="3" max="10" step="0.50" value="5">
-              </label>
-            </div>
-          </div>
-        </article>
-
-        <article class="card">
-          <h3>Camping / pernocta</h3>
-
-          <div class="option-grid three">
-            <label class="option-card">
-              <input type="radio" name="stayMode" value="reference" checked>
-              <span>
-                <strong>Camping investigado</strong>
-                <small>Adulto 7,75 € · Niño 6 € · Parking 12 €</small>
-              </span>
-            </label>
-
-            <label class="option-card">
-              <input type="radio" name="stayMode" value="manual">
-              <span>
-                <strong>Manual</strong>
-                <small>Editar precios de pernocta</small>
-              </span>
-            </label>
-
-            <label class="option-card">
-              <input type="radio" name="stayMode" value="free">
-              <span>
-                <strong>Opción gratuita</strong>
-                <small>Coste de pernocta 0 €</small>
-              </span>
-            </label>
-          </div>
-
-          <div id="stayManualFields" class="sub-card" hidden>
-            <div class="mini-grid">
-              <label>
-                Adulto/noche (€)
-                <input id="campingAdultNight" type="number" min="0" step="0.01" value="7.75">
-              </label>
-
-              <label>
-                Niño/noche (€)
-                <input id="campingChildNight" type="number" min="0" step="0.01" value="6">
-              </label>
-
-              <label>
-                Parking/noche (€)
-                <input id="rvParkingNight" type="number" min="0" step="0.01" value="12">
-              </label>
-            </div>
-          </div>
-
-          <div id="stayFreeFields" class="sub-card" hidden>
+          <div id="selectedVehicleBox" class="sub-card">
             <p class="helper-text">
-              Si conoces un sitio gratuito para acampar, usa el botón de "Buscar en Google Maps" para buscar la dirección y pégala en el campo de "Ubicación o dirección" para agregarla a tus resultados.
+              La autocaravana seleccionada exige una reserva mínima de 3 días.
             </p>
+            <input type="hidden" name="tripDays" value="3" checked>
+            <div class="reference-box">
+              <span>Duración:</span>
+              <strong>3 días / 2 noches</strong>
+            </div>
+          </div>
 
+          <div id="otherVehicleBox" class="sub-card" hidden>
             <label>
-              Nombre del lugar
-              <input id="freeStayName" type="text" placeholder="Ejemplo: área gratuita municipal">
+              Nombre o referencia de la otra autocaravana
+              <input id="otherVehicleName" type="text" placeholder="Ejemplo: Autocaravana alternativa investigada">
             </label>
 
-            <label class="stay-location-label">
-              Ubicación o dirección
-              <input id="freeStayLocation" type="text" placeholder="Ejemplo: https://maps.google.com/...">
-            </label>
+            <div class="mini-grid">
+              <label>
+                Alquiler 2 días (€)
+                <input id="otherRental2" type="number" min="0" step="0.01" placeholder="Ejemplo: 280">
+              </label>
 
-            <button class="btn secondary maps-button" type="button" id="mapsBtn">Buscar en Google Maps</button>
+              <label>
+                Alquiler 3 días (€)
+                <input id="otherRental3" type="number" min="0" step="0.01" placeholder="Ejemplo: 390">
+              </label>
+            </div>
+
+            <p class="field-title">Duración para esta alternativa</p>
+
+            <div class="option-grid">
+              <label class="option-card compact-option">
+                <input type="radio" name="otherTripDays" value="2" checked>
+                <span>
+                  <strong>2 días</strong>
+                  <small>Usa alquiler 2 días</small>
+                </span>
+              </label>
+
+              <label class="option-card compact-option">
+                <input type="radio" name="otherTripDays" value="3">
+                <span>
+                  <strong>3 días</strong>
+                  <small>Usa alquiler 3 días</small>
+                </span>
+              </label>
+            </div>
           </div>
         </article>
 
         <article class="card">
-          <h3>Otros gastos</h3>
+          <h3>Seguro</h3>
 
-          <div class="mini-grid">
-            <label>
-              Actividades (€)
-              <input id="activitiesCost" type="number" min="0" step="0.01" value="40">
+          <div class="option-grid">
+            <label class="option-card">
+              <input type="radio" name="insurancePlan" value="basic">
+              <span>
+                <strong>Seguro básico</strong>
+                <small>6 €/día</small>
+                <small>Fianza bloqueada: <b>1.500 €</b></small>
+              </span>
             </label>
 
-            <label>
-              Peajes (€)
-              <input id="tollsCost" type="number" min="0" step="0.01" value="10">
-            </label>
-
-            <label>
-              Imprevistos (€)
-              <input id="contingencyCost" type="number" min="0" step="0.01" value="50">
+            <label class="option-card">
+              <input type="radio" name="insurancePlan" value="comfort" checked>
+              <span>
+                <strong>Seguro confort</strong>
+                <small>11,99 €/día</small>
+                <small>Fianza bloqueada: <b>750 €</b></small>
+              </span>
             </label>
           </div>
 
-          <div id="extrasList" class="extras-list"></div>
-          <button class="btn secondary full add-extra-button" type="button" id="addExtraBtn">+ Añadir gasto extra</button>
-        </article>
-      </div>
-
-      <div class="step-actions">
-        <button class="btn ghost" type="button" id="step2BackBtn">Atrás</button>
-        <button class="btn primary" type="button" id="step2NextBtn">Siguiente</button>
-      </div>
-    </section>
-
-    <section class="step-panel" data-panel="3">
-      <section class="result-grid">
-        <article class="result-card main">
-          <span>Opción A · gastos de los niños repartidos entre todos los adultos</span>
-          <strong id="sharedAdultCost">0,00 €</strong>
-          <small>Coste por adulto</small>
+          <div class="notice-card inline">
+            <strong id="depositIntroTitle">Fianza bloqueada</strong>
+            <p>
+              La fianza no es un gasto consumido del viaje. Es un importe que se bloquea temporalmente en la cuenta bancaria de un viajero. Si hay daños, se descuenta el coste de reparación hasta un máximo del 100% de la fianza seleccionada.
+            </p>
+          </div>
         </article>
 
-        <article class="result-card">
-          <span>Total estimado del viaje</span>
-          <strong id="tripTotal">0,00 €</strong>
-          <small id="depositShortLabel">+ fianza bloqueada aparte</small>
-        </article>
-
-        <article class="result-card">
-          <span>Opción B · adulto sin niño</span>
-          <strong id="adultWithoutChild">0,00 €</strong>
-          <small>Si cada niño lo paga su adulto responsable</small>
-        </article>
-
-        <article class="result-card">
-          <span>Opción B · adulto con 1 niño</span>
-          <strong id="adultWithOneChild">0,00 €</strong>
-          <small>Adulto + coste estimado de 1 niño</small>
-        </article>
+        <div class="step-actions single">
+          <button class="btn primary" type="button" id="step1NextBtn">Siguiente</button>
+        </div>
       </section>
 
-      <article class="notice-card result-deposit">
-        <strong id="depositResultTitle">Fianza bloqueada</strong>
-        <p>La fianza no se suma como gasto del viaje. Es un importe bloqueado temporalmente en la cuenta bancaria de un viajero.</p>
-      </article>
+      <section class="step-panel" data-panel="2">
+        <article class="card">
+          <h3>Presupuesto orientativo</h3>
 
-      <article class="card">
-        <h3>Desglose completo</h3>
-        <div class="breakdown-list" id="breakdownList"></div>
-      </article>
+          <div class="preset-top-grid">
+            <button class="preset-btn active" type="button" data-preset="low">Gasto bajo</button>
+            <button class="preset-btn" type="button" data-preset="medium">Gasto medio</button>
+            <button class="preset-btn" type="button" data-preset="high">Gasto alto</button>
+          </div>
 
-      <button class="btn primary full share-main-button" type="button" id="showShareBtn">Compartir por WhatsApp</button>
+          <button class="preset-btn manual full-width" type="button" data-preset="manual">Editar detalles</button>
 
-      <section class="card share-panel" id="sharePanel" hidden>
-        <h3>Resumen para enviar por WhatsApp</h3>
-        <textarea id="shareText" rows="14" readonly></textarea>
+          <div class="preset-detail" id="presetDetail"></div>
+        </article>
 
-        <div class="button-grid">
-          <button class="btn primary" type="button" id="copyBtn">Copiar texto</button>
-          <button class="btn secondary" type="button" id="whatsappBtn">Abrir WhatsApp</button>
+        <div id="manualDetails" hidden>
+          <article class="card">
+            <h3>Combustible</h3>
+
+            <div class="option-grid">
+              <label class="option-card">
+                <input type="radio" name="fuelMode" value="reference" checked>
+                <span>
+                  <strong>Usar referencia</strong>
+                  <small>306 km · 10 L/100 km · 1,60 €/L</small>
+                </span>
+              </label>
+
+              <label class="option-card">
+                <input type="radio" name="fuelMode" value="manual">
+                <span>
+                  <strong>Introducir manualmente</strong>
+                  <small>Para ruta diferente o más kilómetros en León</small>
+                </span>
+              </label>
+            </div>
+
+            <div id="fuelManualFields" class="sub-card" hidden>
+              <div class="mini-grid">
+                <label>
+                  Km totales
+                  <input id="manualKm" type="number" min="0" step="1" value="306">
+                </label>
+
+                <label>
+                  Consumo L/100 km
+                  <input id="manualConsumption" type="number" min="0" step="0.1" value="10">
+                </label>
+
+                <label>
+                  Diésel €/L
+                  <input id="manualDiesel" type="number" min="0" step="0.01" value="1.60">
+                </label>
+
+                <label>
+                  O gasto total (€)
+                  <input id="manualFuelTotal" type="number" min="0" step="0.01" placeholder="Opcional">
+                </label>
+              </div>
+            </div>
+          </article>
+
+          <article class="card">
+            <h3>Comidas</h3>
+
+            <div class="option-grid">
+              <label class="option-card">
+                <input type="radio" name="foodMode" value="reference" checked>
+                <span>
+                  <strong>Usar referencia</strong>
+                  <small>4 comidas/día · 5 €/persona</small>
+                </span>
+              </label>
+
+              <label class="option-card">
+                <input type="radio" name="foodMode" value="manual">
+                <span>
+                  <strong>Introducir manualmente</strong>
+                  <small>Ajustar comidas o coste por persona</small>
+                </span>
+              </label>
+            </div>
+
+            <div id="foodManualFields" class="sub-card" hidden>
+              <div class="mini-grid">
+                <label>
+                  Comidas por día
+                  <input id="mealsPerDay" type="number" min="3" max="5" step="1" value="4">
+                </label>
+
+                <label>
+                  Coste comida/persona (€)
+                  <input id="mealCost" type="number" min="3" max="10" step="0.50" value="5">
+                </label>
+              </div>
+            </div>
+          </article>
+
+          <article class="card">
+            <h3>Camping / pernocta</h3>
+
+            <div class="option-grid three">
+              <label class="option-card">
+                <input type="radio" name="stayMode" value="reference" checked>
+                <span>
+                  <strong>Camping investigado</strong>
+                  <small>Adulto 7,75 € · Niño 6 € · Parking 12 €</small>
+                </span>
+              </label>
+
+              <label class="option-card">
+                <input type="radio" name="stayMode" value="manual">
+                <span>
+                  <strong>Manual</strong>
+                  <small>Editar precios de pernocta</small>
+                </span>
+              </label>
+
+              <label class="option-card">
+                <input type="radio" name="stayMode" value="free">
+                <span>
+                  <strong>Opción gratuita</strong>
+                  <small>Coste de pernocta 0 €</small>
+                </span>
+              </label>
+            </div>
+
+            <div id="stayManualFields" class="sub-card" hidden>
+              <div class="mini-grid">
+                <label>
+                  Adulto/noche (€)
+                  <input id="campingAdultNight" type="number" min="0" step="0.01" value="7.75">
+                </label>
+
+                <label>
+                  Niño/noche (€)
+                  <input id="campingChildNight" type="number" min="0" step="0.01" value="6">
+                </label>
+
+                <label>
+                  Parking/noche (€)
+                  <input id="rvParkingNight" type="number" min="0" step="0.01" value="12">
+                </label>
+              </div>
+            </div>
+
+            <div id="stayFreeFields" class="sub-card" hidden>
+              <p class="helper-text">
+                Si conoces un sitio gratuito para acampar, usa el botón de "Buscar en Google Maps" para buscar la dirección y pégala en el campo de "Ubicación o dirección" para agregarla a tus resultados.
+              </p>
+
+              <label>
+                Nombre del lugar
+                <input id="freeStayName" type="text" placeholder="Ejemplo: área gratuita municipal">
+              </label>
+
+              <label class="stay-location-label">
+                Ubicación o dirección
+                <input id="freeStayLocation" type="text" placeholder="Ejemplo: https://maps.google.com/...">
+              </label>
+
+              <button class="btn secondary maps-button" type="button" id="mapsBtn">Buscar en Google Maps</button>
+            </div>
+          </article>
+
+          <article class="card">
+            <h3>Otros gastos</h3>
+
+            <div class="mini-grid">
+              <label>
+                Actividades (€)
+                <input id="activitiesCost" type="number" min="0" step="0.01" value="40">
+              </label>
+
+              <label>
+                Peajes (€)
+                <input id="tollsCost" type="number" min="0" step="0.01" value="10">
+              </label>
+
+              <label>
+                Imprevistos (€)
+                <input id="contingencyCost" type="number" min="0" step="0.01" value="50">
+              </label>
+            </div>
+
+            <div id="extrasList" class="extras-list"></div>
+            <button class="btn secondary full add-extra-button" type="button" id="addExtraBtn">+ Añadir gasto extra</button>
+          </article>
         </div>
 
-        <button class="btn ghost full close-whatsapp" type="button" id="closeShareBtn">Atrás</button>
+        <div class="step-actions">
+          <button class="btn ghost" type="button" id="step2BackBtn">Atrás</button>
+          <button class="btn primary" type="button" id="step2NextBtn">Siguiente</button>
+        </div>
       </section>
 
-      <div class="step-actions single final-start">
-        <button class="btn primary" type="button" id="restartNavBtn">Volver a empezar</button>
-      </div>
-    </section>
-  </main>
-</section>
-    <script  src="./script.js"></script>
+      <section class="step-panel" data-panel="3">
+        <section class="result-grid">
+          <article class="result-card main">
+            <span>Opción A · gastos de los niños repartidos entre todos los adultos</span>
+            <strong id="sharedAdultCost">0,00 €</strong>
+            <small>Coste por adulto</small>
+          </article>
 
-  </body>
-  
+          <article class="result-card">
+            <span>Total estimado del viaje</span>
+            <strong id="tripTotal">0,00 €</strong>
+            <small id="depositShortLabel">+ fianza bloqueada aparte</small>
+          </article>
+
+          <article class="result-card">
+            <span>Opción B · adulto sin niño</span>
+            <strong id="adultWithoutChild">0,00 €</strong>
+            <small>Si cada niño lo paga su adulto responsable</small>
+          </article>
+
+          <article class="result-card">
+            <span>Opción B · adulto con 1 niño</span>
+            <strong id="adultWithOneChild">0,00 €</strong>
+            <small>Adulto + coste estimado de 1 niño</small>
+          </article>
+        </section>
+
+        <article class="notice-card result-deposit">
+          <strong id="depositResultTitle">Fianza bloqueada</strong>
+          <p>La fianza no se suma como gasto del viaje. Es un importe bloqueado temporalmente en la cuenta bancaria de un viajero.</p>
+        </article>
+
+        <article class="card">
+          <h3>Desglose completo</h3>
+          <div class="breakdown-list" id="breakdownList"></div>
+        </article>
+
+        <button class="btn primary full share-main-button" type="button" id="showShareBtn">Compartir por WhatsApp</button>
+
+        <section class="card share-panel" id="sharePanel" hidden>
+          <h3>Resumen para enviar por WhatsApp</h3>
+          <textarea id="shareText" rows="14" readonly></textarea>
+
+          <div class="button-grid">
+            <button class="btn primary" type="button" id="copyBtn">Copiar texto</button>
+            <button class="btn secondary" type="button" id="whatsappBtn">Abrir WhatsApp</button>
+          </div>
+
+          <button class="btn ghost full close-whatsapp" type="button" id="closeShareBtn">Atrás</button>
+        </section>
+
+        <div class="step-actions single final-start">
+          <button class="btn primary" type="button" id="restartNavBtn">Volver a empezar</button>
+        </div>
+      </section>
+    </main>
+  </section>
+
+  <script src="./script.js"></script>
+</body>
 </html>
