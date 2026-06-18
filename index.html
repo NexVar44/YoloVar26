@@ -9,525 +9,419 @@
   </head>
     
   <body>
-  <div class="page-bg"></div>
+  <section class="hero-cover">
+  <div class="hero-overlay"></div>
 
-<div class="app-shell">
-  <aside class="visual-panel">
-    <div class="visual-content">
-      <p class="eyebrow">YoloVar26</p>
-      <h1>¿Y si alquilamos una autocaravana para 7 personas y vamos a León a ver el eclipse?</h1>
-      <p>
-        Una herramienta para revisar datos investigados, ajustar escenarios y decidir si el plan puede encajar para todos.
-      </p>
-    </div>
-  </aside>
+  <div class="hero-content">
+    <p class="hero-kicker">YoloVar26</p>
+    <h1>Presupuesto familiar para ver el eclipse en León en autocaravana</h1>
+    <p>
+      Una calculadora para estimar el coste aproximado del viaje, usando valores investigados como referencia y permitiendo ajustar los datos según el criterio de cada familia.
+    </p>
+  </div>
 
-  <main class="app-card">
-    <header class="mobile-hero">
-      <div class="mobile-hero-spacer"></div>
-      <div class="mobile-hero-content">
-        <p class="eyebrow">YoloVar · Presupuesto familiar</p>
-        <h1>¿Y si alquilamos una autocaravana para 7 personas y vamos a León a ver el eclipse?</h1>
-      </div>
+  <button class="hero-btn" type="button" id="startBtn">Empezar simulación</button>
+</section>
+
+<section class="app-section" id="app">
+  <main class="app-shell">
+    <header class="app-header">
+      <p class="eyebrow">Asturias → León · Agosto 2026</p>
+      <h2>Simulador de gastos</h2>
     </header>
 
-    <section class="intro-card">
-      <p>
-        Esta herramienta reúne los datos que encontré al investigar una posible autocaravana para el viaje:
-        precio por día, seguros, fianza, combustible, comida, pernocta y otros gastos estimados.
-      </p>
-      <p>
-        La idea es ver una referencia inicial del coste por persona y modificar los parámetros ajustables
-        para probar alternativas más convenientes según el presupuesto de cada uno.
-      </p>
-      <p>
-        Así podemos entender mejor qué parte del plan es fija, qué parte se puede negociar
-        y cómo podríamos organizarnos para hacerlo posible.
-      </p>
-    </section>
-
-    <section class="summary-bar" id="stepAnchor">
-      <div>
-        <span class="label-small">Paso actual</span>
-        <strong id="stepCounter">1/4 · Datos del viaje</strong>
-      </div>
-    </section>
-
-    <nav class="step-menu" aria-label="Navegación de pasos">
-      <button class="step-tab active" data-step="1" onclick="goToStep(1)">
-        <span>1</span>
-        Viaje
-      </button>
-      <button class="step-tab" data-step="2" onclick="goToStep(2)">
-        <span>2</span>
-        Tarifas
-      </button>
-      <button class="step-tab" data-step="3" onclick="goToStep(3)">
-        <span>3</span>
-        Comida
-      </button>
-      <button class="step-tab" data-step="4" onclick="goToStep(4)">
-        <span>4</span>
-        Resumen
-      </button>
+    <nav class="step-nav" aria-label="Pasos de la simulación">
+      <button class="step-tab active" type="button" data-step="1">1 · DATOS</button>
+      <button class="step-tab" type="button" data-step="2">2 · GASTOS</button>
+      <button class="step-tab" type="button" data-step="3">3 · RESULTADOS</button>
     </nav>
 
-    <div class="progress-track">
-      <div id="progressFill"></div>
-    </div>
+    <p class="error-message" id="formError" hidden></p>
 
-    <!-- PASO 1 -->
-    <section class="step active" id="step1">
-      <div class="section-heading">
-        <h2>Datos del viaje</h2>
-        <p>
-          Define aquí los datos base. Las fechas calculan automáticamente los días de viaje y las noches de pernocta.
-        </p>
-      </div>
+    <section class="step-panel active" data-panel="1">
+      <article class="compact-note">
+        Puedes ajustar los campos: adultos, niños, autocaravana, seguro, combustible, comidas, camping y otros gastos.
+      </article>
 
-      <div class="form-card">
-        <label>
-          ¿Quién consulta?
-          <select id="userName">
-            <option value="" selected disabled>Selecciona tu nombre</option>
-            <option value="Miguel Angel">Miguel Angel</option>
-            <option value="Ana Cristina">Ana Cristina</option>
-            <option value="Oriana">Oriana</option>
-            <option value="Andreina">Andreina</option>
-            <option value="Luis Fernando">Luis Fernando</option>
-            <option value="Otro invitado">Otro invitado</option>
-          </select>
-        </label>
+      <article class="card compact-card">
+        <h3>Datos base</h3>
 
-        <div class="grid-2">
-          <label>
-            Fecha salida
-            <input class="editable-control" id="startDate" type="date" value="2026-08-11">
-          </label>
-
-          <label>
-            Fecha regreso
-            <input class="editable-control" id="endDate" type="date" value="2026-08-13">
-          </label>
-        </div>
-
-        <div class="computed-box">
-          <span>Duración calculada desde las fechas</span>
-          <strong id="computedDurationMain">3 días / 2 noches</strong>
-        </div>
-
-        <label>
-          Origen investigado
-          <input class="editable-control" id="origin" type="text" value="Oviedo, Asturias">
-        </label>
-
-        <label>
-          Destino / zona investigada
-          <input class="editable-control" id="destination" type="text" value="Valencia de Don Juan, León">
-        </label>
-
-        <div class="grid-3">
+        <div class="mini-grid">
           <label>
             Adultos
-            <input class="editable-control" id="adults" type="number" min="1" step="1" value="5">
+            <input id="adults" type="number" min="1" step="1" value="5" required>
           </label>
 
           <label>
             Niños
-            <input class="editable-control" id="children" type="number" min="0" step="1" value="2">
+            <input id="children" type="number" min="0" step="1" value="2" required>
+          </label>
+        </div>
+      </article>
+
+      <article class="card">
+        <h3>Autocaravana y duración</h3>
+
+        <div class="option-grid">
+          <label class="option-card">
+            <input type="radio" name="vehicleMode" value="selected" checked>
+            <span>
+              <strong>Autocaravana investigada</strong>
+              <small>Reserva mínima: 3 días</small>
+              <small>Alquiler 3 días: <b id="selectedRental3Label">401,88 €</b></small>
+            </span>
           </label>
 
+          <label class="option-card">
+            <input type="radio" name="vehicleMode" value="other">
+            <span>
+              <strong>Otra autocaravana</strong>
+              <small>Para comparar una opción que permita 2 días</small>
+              <small>Introduce tus datos investigados</small>
+            </span>
+          </label>
+        </div>
+
+        <div id="selectedVehicleBox" class="sub-card">
+          <p class="helper-text">
+            La autocaravana seleccionada exige una reserva mínima de 3 días.
+          </p>
+          <input type="hidden" name="tripDays" value="3" checked>
+          <div class="reference-box">
+            <span>Duración:</span>
+            <strong>3 días / 2 noches</strong>
+          </div>
+        </div>
+
+        <div id="otherVehicleBox" class="sub-card" hidden>
           <label>
-            Adultos que pagan
-            <input class="editable-control" id="payingAdults" type="number" min="1" step="1" value="5">
+            Nombre o referencia de la otra autocaravana
+            <input id="otherVehicleName" type="text" placeholder="Ejemplo: Autocaravana alternativa investigada">
+          </label>
+
+          <div class="mini-grid">
+            <label>
+              Alquiler 2 días (€)
+              <input id="otherRental2" type="number" min="0" step="0.01" placeholder="Ejemplo: 280">
+            </label>
+
+            <label>
+              Alquiler 3 días (€)
+              <input id="otherRental3" type="number" min="0" step="0.01" placeholder="Ejemplo: 390">
+            </label>
+          </div>
+
+          <p class="field-title">Duración para esta alternativa</p>
+
+          <div class="option-grid">
+            <label class="option-card compact-option">
+              <input type="radio" name="otherTripDays" value="2" checked>
+              <span>
+                <strong>2 días</strong>
+                <small>Usa alquiler 2 días</small>
+              </span>
+            </label>
+
+            <label class="option-card compact-option">
+              <input type="radio" name="otherTripDays" value="3">
+              <span>
+                <strong>3 días</strong>
+                <small>Usa alquiler 3 días</small>
+              </span>
+            </label>
+          </div>
+        </div>
+      </article>
+
+      <article class="card">
+        <h3>Seguro</h3>
+
+        <div class="option-grid">
+          <label class="option-card">
+            <input type="radio" name="insurancePlan" value="basic">
+            <span>
+              <strong>Seguro básico</strong>
+              <small>6 €/día</small>
+              <small>Fianza bloqueada: <b>1.500 €</b></small>
+            </span>
+          </label>
+
+          <label class="option-card">
+            <input type="radio" name="insurancePlan" value="comfort" checked>
+            <span>
+              <strong>Seguro confort</strong>
+              <small>11,99 €/día</small>
+              <small>Fianza bloqueada: <b>750 €</b></small>
+            </span>
           </label>
         </div>
 
-        <label>
-          Forma de dividir los gastos
-          <select class="editable-control" id="shareMode">
-            <option value="all" selected>Todos los adultos cubren todo el viaje</option>
-            <option value="family">Cada adulto cubre su grupo familiar</option>
-            <option value="custom">Distribución personalizada</option>
-          </select>
-        </label>
-
-        <div id="familyFields" class="conditional-box">
-          <div class="grid-2">
-            <label>
-              Adultos de tu grupo familiar
-              <input class="editable-control" id="familyAdults" type="number" min="1" step="1" value="1">
-            </label>
-
-            <label>
-              Niños de tu grupo familiar
-              <input class="editable-control" id="familyChildren" type="number" min="0" step="1" value="0">
-            </label>
-          </div>
-          <p class="helper-text">
-            Estima cuánto asumiría tu grupo familiar según adultos y niños a tu cargo.
-          </p>
-        </div>
-
-        <div id="customFields" class="conditional-box">
-          <div class="grid-2">
-            <label>
-              Personas cubiertas por tu cálculo
-              <input class="editable-control" id="customCoveredPeople" type="number" min="1" step="1" value="1">
-            </label>
-
-            <label>
-              Adultos que comparten esa parte
-              <input class="editable-control" id="customPayers" type="number" min="1" step="1" value="1">
-            </label>
-          </div>
-          <p class="helper-text">
-            Útil para simular acuerdos concretos: por ejemplo, dos adultos pagan por su propio grupo.
-          </p>
-        </div>
-
-        <div class="info-card">
-          <strong>Presupuesto personal opcional</strong>
+        <div class="notice-card inline">
+          <strong id="depositIntroTitle">Fianza bloqueada</strong>
           <p>
-            Puedes indicar un límite personal para comparar si el coste estimado por adulto queda por debajo o por encima de ese monto.
+            La fianza no es un gasto consumido del viaje. Es un importe que se bloquea temporalmente en la cuenta bancaria de un viajero. Si hay daños, se descuenta el coste de reparación hasta un máximo del 100% de la fianza seleccionada.
           </p>
         </div>
+      </article>
 
-        <label>
-          Presupuesto personal máximo que quieres comparar (€)
-          <input class="editable-control" id="personalBudget" type="number" min="0" step="1" placeholder="Ejemplo: 150">
-        </label>
+      <div class="step-actions single">
+        <button class="btn primary" type="button" id="step1NextBtn">Siguiente</button>
       </div>
     </section>
 
-    <!-- PASO 2 -->
-    <section class="step" id="step2">
-      <div class="section-heading">
-        <h2>Tarifas investigadas</h2>
-        <p>
-          Datos base encontrados para la autocaravana, seguro y combustible.
-        </p>
-      </div>
+    <section class="step-panel" data-panel="2">
+      <article class="card">
+        <h3>Presupuesto orientativo</h3>
 
-      <div class="research-card">
-        <h3>Autocaravana seleccionada</h3>
-        <p><strong>Iguana Camp SIENA 435 “triple 7”</strong></p>
-        <p>7 plazas para viajar y dormir. Recogida prevista en Oviedo.</p>
-        <button class="btn primary full" onclick="openRvPage()">Ver detalles de la autocaravana en su página web</button>
-      </div>
+        <div class="preset-top-grid">
+          <button class="preset-btn active" type="button" data-preset="low">Gasto bajo</button>
+          <button class="preset-btn" type="button" data-preset="medium">Gasto medio</button>
+          <button class="preset-btn" type="button" data-preset="high">Gasto alto</button>
+        </div>
 
-      <div class="form-card">
-        <div class="readonly-grid">
-          <div class="readonly-item">
-            <span>Precio base investigado</span>
-            <strong id="baseRentalLabel">401,88 €</strong>
+        <button class="preset-btn manual full-width" type="button" data-preset="manual">Editar detalles</button>
+
+        <div class="preset-detail" id="presetDetail"></div>
+      </article>
+
+      <div id="manualDetails" hidden>
+        <article class="card">
+          <h3>Combustible</h3>
+
+          <div class="option-grid">
+            <label class="option-card">
+              <input type="radio" name="fuelMode" value="reference" checked>
+              <span>
+                <strong>Usar referencia</strong>
+                <small>306 km · 10 L/100 km · 1,60 €/L</small>
+              </span>
+            </label>
+
+            <label class="option-card">
+              <input type="radio" name="fuelMode" value="manual">
+              <span>
+                <strong>Introducir manualmente</strong>
+                <small>Para ruta diferente o más kilómetros en León</small>
+              </span>
+            </label>
           </div>
 
-          <div class="readonly-item">
-            <span>Duración calculada</span>
-            <strong id="derivedDurationStep2">3 días / 2 noches</strong>
-          </div>
+          <div id="fuelManualFields" class="sub-card" hidden>
+            <div class="mini-grid">
+              <label>
+                Km totales
+                <input id="manualKm" type="number" min="0" step="1" value="306">
+              </label>
 
-          <div class="readonly-item">
-            <span>Precio diario estimado</span>
-            <strong id="dailyRentalLabel">133,96 €</strong>
-          </div>
+              <label>
+                Consumo L/100 km
+                <input id="manualConsumption" type="number" min="0" step="0.1" value="10">
+              </label>
 
-          <div class="readonly-item">
-            <span>Consumo fijo estimado</span>
-            <strong>10 L / 100 km</strong>
-          </div>
-        </div>
+              <label>
+                Diésel €/L
+                <input id="manualDiesel" type="number" min="0" step="0.01" value="1.60">
+              </label>
 
-        <div class="important-card">
-          <strong>Importante</strong>
-          <p>
-            El precio base de 401,88 € corresponde a la información que ofrece la página de alquiler de esta autocaravana
-            para 3 días y 2 noches. Si las fechas cambian, la app calcula una estimación proporcional usando la duración calculada.
-          </p>
-        </div>
-
-        <div class="computed-box">
-          <span>Alquiler estimado según fechas</span>
-          <strong id="computedRentalCost">0,00 €</strong>
-        </div>
-
-        <div class="info-card">
-          <strong>Selecciona una opción de seguro</strong>
-          <p>
-            Aquí se comparan las dos alternativas más económicas. La básica cuesta menos por día,
-            pero bloquea más fianza. La confort cuesta más por día, pero reduce el bloqueo.
-          </p>
-        </div>
-
-        <div class="insurance-options">
-          <button class="insurance-card" id="insuranceBasicCard" type="button" onclick="selectInsurance('basic')">
-            <span class="check">✓</span>
-            <strong>Protección básica</strong>
-            <small>6 €/día</small>
-            <p>Menor coste diario, pero mayor importe bloqueado como fianza.</p>
-            <em>Fianza: 1.500 €</em>
-          </button>
-
-          <button class="insurance-card active" id="insuranceComfortCard" type="button" onclick="selectInsurance('comfort')">
-            <span class="check">✓</span>
-            <strong>Protección confort</strong>
-            <small>11,99 €/día</small>
-            <p>Mayor coste diario, pero menor importe bloqueado como fianza.</p>
-            <em>Fianza: 750 €</em>
-          </button>
-        </div>
-
-        <input id="insurancePlan" type="hidden" value="comfort">
-
-        <div class="insurance-panel">
-          <h3>Detalle del seguro seleccionado</h3>
-
-          <div class="readonly-grid">
-            <div class="readonly-item">
-              <span>Seguro seleccionado</span>
-              <strong id="insuranceNameLabel">Protección confort</strong>
-            </div>
-
-            <div class="readonly-item">
-              <span>Coste diario</span>
-              <strong id="insuranceDailyLabel">11,99 €</strong>
-            </div>
-
-            <div class="readonly-item">
-              <span>Días calculados</span>
-              <strong id="insuranceDaysLabel">3</strong>
-            </div>
-
-            <div class="readonly-item">
-              <span>Total seguro</span>
-              <strong id="computedInsuranceCost">0,00 €</strong>
+              <label>
+                O gasto total (€)
+                <input id="manualFuelTotal" type="number" min="0" step="0.01" placeholder="Opcional">
+              </label>
             </div>
           </div>
+        </article>
 
-          <div class="computed-box compact">
-            <span>Fianza bloqueada según seguro elegido</span>
-            <strong id="depositLabel">0,00 €</strong>
+        <article class="card">
+          <h3>Comidas</h3>
+
+          <div class="option-grid">
+            <label class="option-card">
+              <input type="radio" name="foodMode" value="reference" checked>
+              <span>
+                <strong>Usar referencia</strong>
+                <small>4 comidas/día · 5 €/persona</small>
+              </span>
+            </label>
+
+            <label class="option-card">
+              <input type="radio" name="foodMode" value="manual">
+              <span>
+                <strong>Introducir manualmente</strong>
+                <small>Ajustar comidas o coste por persona</small>
+              </span>
+            </label>
           </div>
 
-          <div class="info-card">
-            <strong>Cómo funciona la fianza</strong>
-            <p>
-              La fianza no es un monto que se entrega, sino un bloqueo de esa cifra en la cuenta de uno de los viajeros.
-              Si no hay daños, se desbloquea. Si ocurre un daño, se cobra solo el importe real del daño,
-              hasta el máximo de la fianza elegida.
+          <div id="foodManualFields" class="sub-card" hidden>
+            <div class="mini-grid">
+              <label>
+                Comidas por día
+                <input id="mealsPerDay" type="number" min="3" max="5" step="1" value="4">
+              </label>
+
+              <label>
+                Coste comida/persona (€)
+                <input id="mealCost" type="number" min="3" max="10" step="0.50" value="5">
+              </label>
+            </div>
+          </div>
+        </article>
+
+        <article class="card">
+          <h3>Camping / pernocta</h3>
+
+          <div class="option-grid three">
+            <label class="option-card">
+              <input type="radio" name="stayMode" value="reference" checked>
+              <span>
+                <strong>Camping investigado</strong>
+                <small>Adulto 7,75 € · Niño 6 € · Parking 12 €</small>
+              </span>
+            </label>
+
+            <label class="option-card">
+              <input type="radio" name="stayMode" value="manual">
+              <span>
+                <strong>Manual</strong>
+                <small>Editar precios de pernocta</small>
+              </span>
+            </label>
+
+            <label class="option-card">
+              <input type="radio" name="stayMode" value="free">
+              <span>
+                <strong>Opción gratuita</strong>
+                <small>Coste de pernocta 0 €</small>
+              </span>
+            </label>
+          </div>
+
+          <div id="stayManualFields" class="sub-card" hidden>
+            <div class="mini-grid">
+              <label>
+                Adulto/noche (€)
+                <input id="campingAdultNight" type="number" min="0" step="0.01" value="7.75">
+              </label>
+
+              <label>
+                Niño/noche (€)
+                <input id="campingChildNight" type="number" min="0" step="0.01" value="6">
+              </label>
+
+              <label>
+                Parking/noche (€)
+                <input id="rvParkingNight" type="number" min="0" step="0.01" value="12">
+              </label>
+            </div>
+          </div>
+
+          <div id="stayFreeFields" class="sub-card" hidden>
+            <p class="helper-text">
+              Si conoces un sitio gratuito para acampar, usa el botón de "Buscar en Google Maps" para buscar la dirección y pégala en el campo de "Ubicación o dirección" para agregarla a tus resultados.
             </p>
+
+            <label>
+              Nombre del lugar
+              <input id="freeStayName" type="text" placeholder="Ejemplo: área gratuita municipal">
+            </label>
+
+            <label class="stay-location-label">
+              Ubicación o dirección
+              <input id="freeStayLocation" type="text" placeholder="Ejemplo: https://maps.google.com/...">
+            </label>
+
+            <button class="btn secondary maps-button" type="button" id="mapsBtn">Buscar en Google Maps</button>
           </div>
-        </div>
+        </article>
 
-        <div class="route-box">
-          <h3>Ruta, kilómetros y combustible</h3>
-          <p>
-            El cálculo usa como referencia la ruta <strong>Oviedo, Asturias → Valencia de Don Juan, León → Oviedo, Asturias</strong>.
-            El consumo estimado usado es fijo: <strong>10 litros cada 100 km</strong>.
-          </p>
-          <p>
-            Usa el botón de Google Maps para revisar la ruta, calcular kilómetros o valorar paradas adicionales.
-            Si prefieres otra ruta o tienes pensado hacer paseos dentro de León, puedes estimar esos kilómetros extra
-            y agregarlos en los campos de abajo.
-          </p>
-          <button class="btn secondary full" onclick="openMaps()">Abrir Google Maps para revisar kilómetros</button>
-        </div>
+        <article class="card">
+          <h3>Otros gastos</h3>
 
-        <div class="grid-2">
-          <label>
-            Km ida y vuelta estimados
-            <input class="editable-control" id="baseKm" type="number" min="0" step="1" value="306">
-          </label>
+          <div class="mini-grid">
+            <label>
+              Actividades (€)
+              <input id="activitiesCost" type="number" min="0" step="0.01" value="40">
+            </label>
 
-          <label>
-            Km extra para paseos, paradas o desvíos
-            <input class="editable-control" id="extraKm" type="number" min="0" step="1" value="0">
-          </label>
-        </div>
+            <label>
+              Peajes (€)
+              <input id="tollsCost" type="number" min="0" step="0.01" value="10">
+            </label>
 
-        <label>
-          Precio diésel €/L
-          <input class="editable-control" id="dieselPrice" type="number" min="0" step="0.001" value="1.60">
-        </label>
+            <label>
+              Imprevistos (€)
+              <input id="contingencyCost" type="number" min="0" step="0.01" value="50">
+            </label>
+          </div>
 
-        <div class="computed-box">
-          <span>Combustible estimado con km extra incluidos</span>
-          <strong id="computedFuelCost">0,00 €</strong>
-        </div>
+          <div id="extrasList" class="extras-list"></div>
+          <button class="btn secondary full add-extra-button" type="button" id="addExtraBtn">+ Añadir gasto extra</button>
+        </article>
+      </div>
+
+      <div class="step-actions">
+        <button class="btn ghost" type="button" id="step2BackBtn">Atrás</button>
+        <button class="btn primary" type="button" id="step2NextBtn">Siguiente</button>
       </div>
     </section>
 
-    <!-- PASO 3 -->
-    <section class="step" id="step3">
-      <div class="section-heading">
-        <h2>Comida y pernocta</h2>
-        <p>
-          Ajusta comida, lugar de pernocta y gastos adicionales.
-        </p>
-      </div>
+    <section class="step-panel" data-panel="3">
+      <section class="result-grid">
+        <article class="result-card main">
+          <span>Opción A · gastos de los niños repartidos entre todos los adultos</span>
+          <strong id="sharedAdultCost">0,00 €</strong>
+          <small>Coste por adulto</small>
+        </article>
 
-      <div class="form-card">
-        <div class="duration-card">
-          <h3>Duración usada para estos cálculos</h3>
-          <p>
-            La duración se calcula desde las fechas introducidas en la pantalla Viaje.
-            Los días se usan para seguro y alquiler. Las noches se usan para pernocta.
-          </p>
+        <article class="result-card">
+          <span>Total estimado del viaje</span>
+          <strong id="tripTotal">0,00 €</strong>
+          <small id="depositShortLabel">+ fianza bloqueada aparte</small>
+        </article>
 
-          <div class="readonly-grid">
-            <div class="readonly-item">
-              <span>Días de viaje</span>
-              <strong id="derivedTripDaysStep3">3</strong>
-            </div>
+        <article class="result-card">
+          <span>Opción B · adulto sin niño</span>
+          <strong id="adultWithoutChild">0,00 €</strong>
+          <small>Si cada niño lo paga su adulto responsable</small>
+        </article>
 
-            <div class="readonly-item">
-              <span>Noches de pernocta</span>
-              <strong id="derivedStayNightsStep3">2</strong>
-            </div>
-          </div>
+        <article class="result-card">
+          <span>Opción B · adulto con 1 niño</span>
+          <strong id="adultWithOneChild">0,00 €</strong>
+          <small>Adulto + coste estimado de 1 niño</small>
+        </article>
+      </section>
+
+      <article class="notice-card result-deposit">
+        <strong id="depositResultTitle">Fianza bloqueada</strong>
+        <p>La fianza no se suma como gasto del viaje. Es un importe bloqueado temporalmente en la cuenta bancaria de un viajero.</p>
+      </article>
+
+      <article class="card">
+        <h3>Desglose completo</h3>
+        <div class="breakdown-list" id="breakdownList"></div>
+      </article>
+
+      <button class="btn primary full share-main-button" type="button" id="showShareBtn">Compartir por WhatsApp</button>
+
+      <section class="card share-panel" id="sharePanel" hidden>
+        <h3>Resumen para enviar por WhatsApp</h3>
+        <textarea id="shareText" rows="14" readonly></textarea>
+
+        <div class="button-grid">
+          <button class="btn primary" type="button" id="copyBtn">Copiar texto</button>
+          <button class="btn secondary" type="button" id="whatsappBtn">Abrir WhatsApp</button>
         </div>
 
-        <div class="research-card inner">
-          <h3>Comida estimada</h3>
-          <p>
-            Introduce el número total de comidas que quieres considerar para todo el viaje.
-            Esto permite ajustar casos donde se sale por la tarde, se llega de noche o no todos los días tienen la misma cantidad de comidas.
-          </p>
-        </div>
+        <button class="btn ghost full close-whatsapp" type="button" id="closeShareBtn">Atrás</button>
+      </section>
 
-        <label>
-          Plan de comida
-          <select id="foodPlan" class="editable-control">
-            <option value="home">Plan mínimo · 3 €/comida/persona</option>
-            <option value="balanced" selected>Plan económico equilibrado · 5 €/comida/persona</option>
-            <option value="custom">Plan personalizado</option>
-          </select>
-        </label>
-
-        <div class="grid-2">
-          <label>
-            Nº total de comidas a calcular
-            <input id="totalMealsInput" class="editable-control" type="number" min="0" step="1" value="8">
-            <small>
-              Cuenta solo las comidas reales que quieras incluir. Ejemplo: si se sale de tarde y solo se cena ese día, cuenta 1 comida.
-            </small>
-          </label>
-
-          <label>
-            Coste por comida/persona (€)
-            <input id="mealCost" class="editable-control" type="number" min="0" step="0.01" value="5">
-          </label>
-        </div>
-
-        <div class="computed-box">
-          <span>Comida estimada para todos los participantes</span>
-          <strong id="computedFoodCost">0,00 €</strong>
-        </div>
-
-        <div class="research-card inner">
-          <h3>Referencia de pernocta</h3>
-          <p>
-            Puedes usar los botones siguientes para cargar una referencia de camping investigado, aunque no tenga disponibilidad para esas fechas,
-            porque sirve como orientación de precios.
-          </p>
-          <p>
-            También puedes añadir otra área o camping investigado. Si es una alternativa gratuita, escribe su nombre,
-            indica la ubicación si la tienes y marca la casilla “Área gratuita”.
-          </p>
-        </div>
-
-        <label>
-          Nombre de la opción de pernocta
-          <input id="stayName" class="editable-control" type="text" value="Área o camping por confirmar">
-          <small>Ejemplo: área gratuita municipal, camping consultado, aparcamiento permitido o zona pendiente.</small>
-        </label>
-
-        <label>
-          Dirección o zona de pernocta
-          <input id="stayAddress" class="editable-control" type="text" value="Valencia de Don Juan, León">
-          <small>Sirve para guardar la ubicación que estás valorando.</small>
-        </label>
-
-        <label class="checkbox-card">
-          <input id="isFreeStay" type="checkbox">
-          <span>
-            <strong>Área gratuita</strong>
-            <small>Marca esta opción solo si no hay coste de pernocta. El precio quedará en 0 € y se desactivará.</small>
-          </span>
-        </label>
-
-        <div class="grid-2">
-          <label>
-            Coste pernocta por noche (€)
-            <input id="stayCostNight" class="editable-control" type="number" min="0" step="0.01" value="0">
-          </label>
-
-          <div class="computed-box mini-computed">
-            <span>Pernocta estimada según noches calculadas</span>
-            <strong id="computedStayCost">0,00 €</strong>
-          </div>
-        </div>
-
-        <div class="button-row">
-          <button class="btn secondary" onclick="markFreeStay()">Marcar como área gratuita</button>
-          <button class="btn secondary" onclick="useReferenceStay()">Usar referencia 62,75 €/noche</button>
-        </div>
-
-        <div class="info-card top-space">
-          <strong>Gastos extra opcionales</strong>
-          <p>
-            Agrega gastos adicionales que quieras considerar, como hielo, snacks, peajes, compra extra,
-            aparcamiento puntual, electricidad u otro coste no incluido.
-          </p>
-        </div>
-
-        <div id="extrasList" class="extras-list"></div>
-
-        <button class="btn secondary full" onclick="addExtraItem()">+ Agregar gasto extra</button>
+      <div class="step-actions single final-start">
+        <button class="btn primary" type="button" id="restartNavBtn">Volver a empezar</button>
       </div>
     </section>
-
-    <!-- PASO 4 -->
-    <section class="step" id="step4">
-      <div class="section-heading">
-        <h2>Resumen y decisión</h2>
-        <p>
-          Resultado calculado según las tarifas investigadas y los cambios simulados.
-        </p>
-      </div>
-
-      <div class="result-card">
-        <span>Coste estimado por adulto</span>
-        <strong id="adultTotal">0,00 €</strong>
-        <p id="budgetStatus">Resultado calculado con los datos actuales.</p>
-      </div>
-
-      <div class="summary-note" id="shareModeNote"></div>
-
-      <div class="cart-list" id="cartList"></div>
-
-      <div class="actions-grid">
-        <button class="btn primary" onclick="copySummary()">Copiar WhatsApp</button>
-        <button class="btn secondary" onclick="downloadCSV()">Descargar CSV</button>
-        <button class="btn secondary" onclick="window.print()">Guardar PDF</button>
-        <button class="btn secondary" onclick="shareSummary()">Compartir</button>
-      </div>
-    </section>
-
-    <footer class="navigation-footer">
-      <div class="nav-main">
-        <button class="btn ghost" onclick="prevStep()">Anterior</button>
-        <button class="btn primary" onclick="nextStep()">Siguiente</button>
-      </div>
-
-      <div class="nav-secondary">
-        <button class="btn secondary" onclick="goHome()">Inicio</button>
-        <button class="btn danger" onclick="confirmResetAll()">Reiniciar todo</button>
-      </div>
-    </footer>
   </main>
-</div>
+</section>
     <script  src="./script.js"></script>
 
   </body>

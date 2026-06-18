@@ -1,812 +1,758 @@
+const SELECTED_RENTAL_3_DAYS = 401.88;
+
+const REFERENCE = {
+  km: 306,
+  consumption: 10,
+  diesel: 1.6,
+  campingAdult: 7.75,
+  campingChild: 6,
+  rvParking: 12
+};
+
+const INSURANCE = {
+  basic: { name: "Seguro básico", daily: 6, deposit: 1500 },
+  comfort: { name: "Seguro confort", daily: 11.99, deposit: 750 }
+};
+
+const PRESETS = {
+  low: {
+    label: "Gasto bajo",
+    mealsPerDay: 3,
+    mealCost: 3,
+    activities: 0,
+    tolls: 0,
+    contingency: 20,
+    other: 0
+  },
+  medium: {
+    label: "Gasto medio",
+    mealsPerDay: 4,
+    mealCost: 5,
+    activities: 40,
+    tolls: 10,
+    contingency: 50,
+    other: 0
+  },
+  high: {
+    label: "Gasto alto",
+    mealsPerDay: 5,
+    mealCost: 10,
+    activities: 100,
+    tolls: 25,
+    contingency: 100,
+    other: 0
+  }
+};
+
 let currentStep = 1;
+let selectedPreset = "low";
+let extras = [];
 
-const BASE_RENTAL_COST = 401.88;
-const BASE_RENTAL_DAYS = 3;
-const FIXED_CONSUMPTION = 10;
-const RV_PAGE_URL = "https://www.camplify.es/rv/17531?startDate=2026-08-11&endDate=2026-08-13&hireType=4&excessReductionId=208";
+function $(id) {
+  return document.getElementById(id);
+}
 
-let extraItems = [
-  { name: "Otros gastos", amount: 0 }
-];
-
-const stepTitles = {
-  1: "Datos del viaje",
-  2: "Tarifas investigadas",
-  3: "Comida y pernocta",
-  4: "Resumen y compartir"
-};
-
-const defaults = {
-  userName: "",
-  startDate: "2026-08-11",
-  endDate: "2026-08-13",
-  origin: "Oviedo, Asturias",
-  destination: "Valencia de Don Juan, León",
-  adults: 5,
-  children: 2,
-  payingAdults: 5,
-  shareMode: "all",
-  familyAdults: 1,
-  familyChildren: 0,
-  customCoveredPeople: 1,
-  customPayers: 1,
-  personalBudget: "",
-  insurancePlan: "comfort",
-  baseKm: 306,
-  extraKm: 0,
-  dieselPrice: 1.60,
-  foodPlan: "balanced",
-  totalMealsInput: 8,
-  mealCost: 5,
-  stayName: "Área o camping por confirmar",
-  stayAddress: "Valencia de Don Juan, León",
-  isFreeStay: false,
-  stayCostNight: 0
-};
-
-function euro(value) {
+function money(value) {
   return new Intl.NumberFormat("es-ES", {
     style: "currency",
     currency: "EUR"
   }).format(Number(value || 0));
 }
 
-function getValue(id) {
-  const el = document.getElementById(id);
-  if (!el) return "";
+function readNumber(id, fallback = 0) {
+  const el = $(id);
+  if (!el) return fallback;
+  if (el.value === "") return fallback;
 
-  if (el.type === "checkbox") return el.checked;
+  const value = Number(el.value);
+  return Number.isFinite(value) ? value : fallback;
+}
 
-  if (el.type === "number") {
-    if (el.value === "") return "";
-    return Number(el.value || 0);
+function selectedRadio(name, fallback = "") {
+  const checked = document.querySelector(`input[name="${name}"]:checked`);
+  return checked ? checked.value : fallback;
+}
+
+function clamp(value, min, max) {
+  return Math.min(Math.max(value, min), max);
+}
+
+function escapeHtml(text) {
+  return String(text || "")
+    .replaceAll("&", "&amp;")
+    .replaceAll("<", "&lt;")
+    .replaceAll(">", "&gt;")
+    .replaceAll('"', "&quot;")
+    .replaceAll("'", "&#039;");
+}
+
+function isValidUrl(value) {
+  try {
+    const url = new URL(String(value).trim());
+    return url.protocol === "http:" || url.protocol === "https:";
+  } catch {
+    return false;
   }
-
-  return el.value;
 }
 
-function setValue(id, value) {
-  const el = document.getElementById(id);
-  if (!el) return;
-
-  if (el.type === "checkbox") {
-    el.checked = Boolean(value);
-    return;
-  }
-
-  el.value = value;
+function getVehicleMode() {
+  return selectedRadio("vehicleMode", "selected");
 }
 
-function getNumber(id, fallback = 0) {
-  const value = getValue(id);
-  if (value === "") return fallback;
-  return Number(value);
+function getDays() {
+  if (getVehicleMode() === "selected") return 3;
+  return Number(selectedRadio("otherTripDays", "2"));
 }
 
-function getTripDuration() {
-  const start = new Date(getValue("startDate"));
-  const end = new Date(getValue("endDate"));
-
-  if (Number.isNaN(start.getTime()) || Number.isNaN(end.getTime())) {
-    return { tripDays: 3, stayNights: 2 };
-  }
-
-  const diffMs = end.setHours(0, 0, 0, 0) - start.setHours(0, 0, 0, 0);
-  const diffDays = Math.round(diffMs / 86400000);
-
-  if (diffDays < 0) {
-    return { tripDays: 1, stayNights: 0 };
-  }
-
-  return {
-    tripDays: diffDays + 1,
-    stayNights: diffDays
-  };
+function getRental(days) {
+  if (getVehicleMode() === "selected") return SELECTED_RENTAL_3_DAYS;
+  if (days === 2) return Math.max(readNumber("otherRental2", 0), 0);
+  return Math.max(readNumber("otherRental3", 0), 0);
 }
 
-function openRvPage() {
-  window.open(RV_PAGE_URL, "_blank", "noopener,noreferrer");
-}
-
-function selectInsurance(plan) {
-  setValue("insurancePlan", plan);
-
-  document.getElementById("insuranceBasicCard").classList.toggle("active", plan === "basic");
-  document.getElementById("insuranceComfortCard").classList.toggle("active", plan === "comfort");
-
-  render();
+function getVehicleName() {
+  if (getVehicleMode() === "selected") return "Autocaravana investigada";
+  return $("otherVehicleName").value.trim() || "Otra autocaravana investigada";
 }
 
 function getInsurance() {
-  const plan = getValue("insurancePlan");
+  return INSURANCE[selectedRadio("insurancePlan", "comfort")] || INSURANCE.comfort;
+}
 
-  if (plan === "basic") {
+function getFuelCost() {
+  if (selectedPreset !== "manual") {
+    return (REFERENCE.km * REFERENCE.consumption / 100) * REFERENCE.diesel;
+  }
+
+  const mode = selectedRadio("fuelMode", "reference");
+
+  if (mode === "reference") {
+    return (REFERENCE.km * REFERENCE.consumption / 100) * REFERENCE.diesel;
+  }
+
+  const manualTotalRaw = $("manualFuelTotal").value;
+
+  if (manualTotalRaw !== "") {
+    return Math.max(readNumber("manualFuelTotal", 0), 0);
+  }
+
+  const km = Math.max(readNumber("manualKm", REFERENCE.km), 0);
+  const consumption = Math.max(readNumber("manualConsumption", REFERENCE.consumption), 0);
+  const diesel = Math.max(readNumber("manualDiesel", REFERENCE.diesel), 0);
+
+  return (km * consumption / 100) * diesel;
+}
+
+function getFoodValues() {
+  if (selectedPreset !== "manual") {
+    const preset = PRESETS[selectedPreset] || PRESETS.medium;
     return {
-      name: "Protección básica",
-      dailyCost: 6,
-      deposit: 1500
+      mealsPerDay: preset.mealsPerDay,
+      mealCost: preset.mealCost
+    };
+  }
+
+  const mode = selectedRadio("foodMode", "reference");
+
+  if (mode === "reference") {
+    return {
+      mealsPerDay: 4,
+      mealCost: 5
     };
   }
 
   return {
-    name: "Protección confort",
-    dailyCost: 11.99,
-    deposit: 750
+    mealsPerDay: clamp(Math.round(readNumber("mealsPerDay", 4)), 3, 5),
+    mealCost: clamp(readNumber("mealCost", 5), 3, 10)
   };
 }
 
-function syncFoodPlan() {
-  const plan = getValue("foodPlan");
-
-  if (plan === "home") {
-    setValue("mealCost", 3);
-  }
-
-  if (plan === "balanced") {
-    setValue("mealCost", 5);
-  }
-}
-
-function normalizeIntegerField(id, minValue = 0) {
-  const value = Math.max(Math.round(getNumber(id, minValue)), minValue);
-  setValue(id, value);
-}
-
-function normalizeIntegerInputs() {
-  [
-    ["adults", 1],
-    ["children", 0],
-    ["payingAdults", 1],
-    ["familyAdults", 1],
-    ["familyChildren", 0],
-    ["customCoveredPeople", 1],
-    ["customPayers", 1],
-    ["baseKm", 0],
-    ["extraKm", 0],
-    ["totalMealsInput", 0]
-  ].forEach(([id, min]) => normalizeIntegerField(id, min));
-}
-
-function updateConditionalFields() {
-  const mode = getValue("shareMode");
-
-  document.getElementById("familyFields").style.display = mode === "family" ? "block" : "none";
-  document.getElementById("customFields").style.display = mode === "custom" ? "block" : "none";
-}
-
-function updateFreeStayState() {
-  const isFree = getValue("isFreeStay");
-  const costInput = document.getElementById("stayCostNight");
-
-  if (isFree) {
-    setValue("stayCostNight", 0);
-    costInput.disabled = true;
-  } else {
-    costInput.disabled = false;
-  }
-}
-
-function markFreeStay() {
-  const currentName = getValue("stayName");
-  const currentAddress = getValue("stayAddress");
-
-  if (!currentName || currentName === "Área o camping por confirmar") {
-    setValue("stayName", "Área gratuita o aparcamiento permitido");
-  }
-
-  if (!currentAddress) {
-    setValue("stayAddress", "Valencia de Don Juan, León");
-  }
-
-  setValue("isFreeStay", true);
-  updateFreeStayState();
-  render();
-}
-
-function useReferenceStay() {
-  setValue("stayName", "Referencia de precio: camping sin disponibilidad confirmada");
-  setValue("isFreeStay", false);
-  setValue("stayCostNight", 62.75);
-  updateFreeStayState();
-  render();
-}
-
-function addExtraItem() {
-  extraItems.push({ name: "", amount: 0 });
-  renderExtraItems();
-  render();
-}
-
-function removeExtraItem(index) {
-  extraItems.splice(index, 1);
-
-  if (extraItems.length === 0) {
-    extraItems.push({ name: "", amount: 0 });
-  }
-
-  renderExtraItems();
-  render();
-}
-
-function updateExtraName(index, value) {
-  extraItems[index].name = value;
-  render();
-}
-
-function updateExtraAmount(index, value) {
-  extraItems[index].amount = Number(value || 0);
-  render();
-}
-
-function renderExtraItems() {
-  const container = document.getElementById("extrasList");
-
-  container.innerHTML = extraItems.map((item, index) => `
-    <div class="extra-item">
-      <div class="extra-item-header">
-        <strong>Gasto extra ${index + 1}</strong>
-        <button class="remove-btn" onclick="removeExtraItem(${index})">Quitar</button>
-      </div>
-
-      <div class="grid-2">
-        <label>
-          Nombre del gasto
-          <input
-            class="editable-control auto-select"
-            type="text"
-            value="${item.name || ""}"
-            placeholder="Ejemplo: pañales, peajes, electricidad"
-            oninput="updateExtraName(${index}, this.value)"
-          >
-        </label>
-
-        <label>
-          Monto (€)
-          <input
-            class="editable-control auto-select"
-            type="number"
-            min="0"
-            step="0.01"
-            value="${item.amount || 0}"
-            oninput="updateExtraAmount(${index}, this.value)"
-          >
-        </label>
-      </div>
-    </div>
-  `).join("");
-
-  attachAutoSelect();
-}
-
-function getExtrasTotal() {
-  return extraItems.reduce((sum, item) => sum + Number(item.amount || 0), 0);
-}
-
-function getValidExtras() {
-  return extraItems.filter(item => item.name || Number(item.amount || 0) > 0);
-}
-
-function getExtrasSummary() {
-  const valid = getValidExtras();
-  if (!valid.length) return "Sin gastos extra añadidos";
-  return valid.map(item => `${item.name || "Gasto extra"}: ${euro(item.amount)}`).join(" · ");
-}
-
-function getShareResult(baseCosts) {
-  const mode = getValue("shareMode");
-  const adults = Math.max(Math.round(getNumber("adults", 1)), 1);
-  const children = Math.max(Math.round(getNumber("children", 0)), 0);
-  const travelers = adults + children;
-  const payingAdults = Math.max(Math.round(getNumber("payingAdults", 1)), 1);
-
-  const familyAdults = Math.max(Math.round(getNumber("familyAdults", 1)), 1);
-  const familyChildren = Math.max(Math.round(getNumber("familyChildren", 0)), 0);
-  const familyPeople = familyAdults + familyChildren;
-
-  const customCoveredPeople = Math.max(Math.round(getNumber("customCoveredPeople", 1)), 1);
-  const customPayers = Math.max(Math.round(getNumber("customPayers", 1)), 1);
-
-  const operationalTotal = baseCosts.operationalTotal;
-
-  if (mode === "family") {
-    const proportionalCost = travelers > 0
-      ? operationalTotal * (familyPeople / travelers)
-      : operationalTotal;
-
+function getStayValues() {
+  if (selectedPreset !== "manual") {
     return {
-      label: "Coste estimado de tu grupo familiar",
-      perAdultCost: proportionalCost / familyAdults,
-      note: `Distribución familiar: se estima la parte correspondiente a ${familyAdults} adulto(s) y ${familyChildren} niño(s), dentro de un total de ${travelers} personas.`
+      mode: "reference",
+      typeLabel: "Camping investigado",
+      adultNight: REFERENCE.campingAdult,
+      childNight: REFERENCE.campingChild,
+      rvParking: REFERENCE.rvParking,
+      freeName: "",
+      freeLocation: ""
     };
   }
 
-  if (mode === "custom") {
-    const proportionalCost = travelers > 0
-      ? operationalTotal * (customCoveredPeople / travelers)
-      : operationalTotal;
+  const mode = selectedRadio("stayMode", "reference");
 
+  if (mode === "free") {
     return {
-      label: "Coste estimado de la distribución personalizada",
-      perAdultCost: proportionalCost / customPayers,
-      note: `Distribución personalizada: se calcula la parte de ${customCoveredPeople} persona(s), repartida entre ${customPayers} adulto(s).`
+      mode,
+      typeLabel: "Gratuita",
+      adultNight: 0,
+      childNight: 0,
+      rvParking: 0,
+      freeName: $("freeStayName").value.trim(),
+      freeLocation: $("freeStayLocation").value.trim()
+    };
+  }
+
+  if (mode === "manual") {
+    return {
+      mode,
+      typeLabel: "Manual",
+      adultNight: Math.max(readNumber("campingAdultNight", REFERENCE.campingAdult), 0),
+      childNight: Math.max(readNumber("campingChildNight", REFERENCE.campingChild), 0),
+      rvParking: Math.max(readNumber("rvParkingNight", REFERENCE.rvParking), 0),
+      freeName: "",
+      freeLocation: ""
     };
   }
 
   return {
-    label: "Coste estimado por adulto responsable",
-    perAdultCost: operationalTotal / payingAdults,
-    note: `Distribución común: los gastos de ${adults} adultos y ${children} niños se reparten entre ${payingAdults} adulto(s) responsable(s).`
+    mode,
+    typeLabel: "Camping investigado",
+    adultNight: REFERENCE.campingAdult,
+    childNight: REFERENCE.campingChild,
+    rvParking: REFERENCE.rvParking,
+    freeName: "",
+    freeLocation: ""
+  };
+}
+
+function getOtherCosts() {
+  if (selectedPreset !== "manual") {
+    const preset = PRESETS[selectedPreset] || PRESETS.medium;
+    return {
+      activities: preset.activities,
+      tolls: preset.tolls,
+      contingency: preset.contingency,
+      extras: preset.other
+    };
+  }
+
+  const extrasCost = extras.reduce((sum, item) => {
+    return sum + Math.max(Number(item.amount || 0), 0);
+  }, 0);
+
+  return {
+    activities: Math.max(readNumber("activitiesCost", 0), 0),
+    tolls: Math.max(readNumber("tollsCost", 0), 0),
+    contingency: Math.max(readNumber("contingencyCost", 0), 0),
+    extras: extrasCost
+  };
+}
+
+function calculateForDays(days) {
+  const adults = Math.max(Math.round(readNumber("adults", 5)), 1);
+  const children = Math.max(Math.round(readNumber("children", 2)), 0);
+  const nights = Math.max(days - 1, 0);
+  const people = adults + children;
+
+  const insurance = getInsurance();
+  const rental = getRental(days);
+  const insuranceCost = insurance.daily * days;
+  const fuel = getFuelCost();
+
+  const food = getFoodValues();
+  const adultFoodCost = adults * days * food.mealsPerDay * food.mealCost;
+  const childFoodCost = children * days * food.mealsPerDay * food.mealCost;
+
+  const stay = getStayValues();
+  const adultStayCost = adults * nights * stay.adultNight;
+  const childStayCost = children * nights * stay.childNight;
+  const parkingCost = nights * stay.rvParking;
+
+  const other = getOtherCosts();
+
+  const commonCosts =
+    rental +
+    insuranceCost +
+    fuel +
+    parkingCost +
+    other.activities +
+    other.tolls +
+    other.contingency +
+    other.extras;
+
+  const adultVariableCost = adultFoodCost + adultStayCost;
+  const childVariableCost = childFoodCost + childStayCost;
+
+  const total = commonCosts + adultVariableCost + childVariableCost;
+  const sharedAdultCost = adults > 0 ? total / adults : 0;
+
+  const adultBaseCost =
+    adults > 0
+      ? (commonCosts / adults) + (adultVariableCost / adults)
+      : 0;
+
+  const childUnitCost = children > 0 ? childVariableCost / children : 0;
+
+  return {
+    days,
+    nights,
+    adults,
+    children,
+    people,
+    vehicleName: getVehicleName(),
+    vehicleMode: getVehicleMode(),
+    insurance,
+    rental,
+    insuranceCost,
+    fuel,
+    food,
+    stay,
+    other,
+    adultFoodCost,
+    childFoodCost,
+    adultStayCost,
+    childStayCost,
+    parkingCost,
+    commonCosts,
+    adultVariableCost,
+    childVariableCost,
+    total,
+    sharedAdultCost,
+    adultWithoutChild: adultBaseCost,
+    adultWithOneChild: adultBaseCost + childUnitCost,
+    adultWithTwoChildren: adultBaseCost + (childUnitCost * 2)
   };
 }
 
 function calculate() {
-  const { tripDays, stayNights } = getTripDuration();
-
-  const adults = Math.max(Math.round(getNumber("adults", 1)), 1);
-  const children = Math.max(Math.round(getNumber("children", 0)), 0);
-  const travelers = adults + children;
-
-  const dailyRentalCost = BASE_RENTAL_COST / BASE_RENTAL_DAYS;
-  const rentalCost = dailyRentalCost * tripDays;
-
-  const insurance = getInsurance();
-  const insuranceDays = tripDays;
-  const insuranceTotal = insurance.dailyCost * insuranceDays;
-
-  const baseKm = Math.max(Math.round(getNumber("baseKm", 0)), 0);
-  const extraKm = Math.max(Math.round(getNumber("extraKm", 0)), 0);
-  const totalKm = baseKm + extraKm;
-  const dieselPrice = Math.max(getNumber("dieselPrice", 0), 0);
-  const fuelLiters = (totalKm * FIXED_CONSUMPTION) / 100;
-  const fuelTotal = fuelLiters * dieselPrice;
-
-  const totalMeals = Math.max(Math.round(getNumber("totalMealsInput", 0)), 0);
-  const mealCost = Math.max(getNumber("mealCost", 0), 0);
-  const foodTotal = totalMeals * mealCost * travelers;
-
-  const isFreeStay = getValue("isFreeStay");
-  const stayCostNight = isFreeStay ? 0 : Math.max(getNumber("stayCostNight", 0), 0);
-  const stayTotal = stayCostNight * stayNights;
-
-  const extraCost = getExtrasTotal();
-
-  const operationalTotal =
-    rentalCost +
-    insuranceTotal +
-    fuelTotal +
-    foodTotal +
-    stayTotal +
-    extraCost;
-
-  const share = getShareResult({ operationalTotal });
-  const initialBlock = operationalTotal + insurance.deposit;
-
-  const personalBudgetRaw = getValue("personalBudget");
-  const personalBudget = personalBudgetRaw === "" ? null : Number(personalBudgetRaw);
-  const missing = personalBudget === null ? null : share.perAdultCost - personalBudget;
-
-  return {
-    adults,
-    children,
-    travelers,
-    tripDays,
-    stayNights,
-    dailyRentalCost,
-    rentalCost,
-    insurance,
-    insuranceDays,
-    insuranceTotal,
-    baseKm,
-    extraKm,
-    totalKm,
-    dieselPrice,
-    fuelLiters,
-    fuelTotal,
-    totalMeals,
-    mealCost,
-    foodTotal,
-    isFreeStay,
-    stayCostNight,
-    stayTotal,
-    extraCost,
-    operationalTotal,
-    initialBlock,
-    personalBudget,
-    missing,
-    share
-  };
+  return calculateForDays(getDays());
 }
 
-function renderCart(c) {
-  const validExtras = getValidExtras();
+function showError(message) {
+  const error = $("formError");
+  error.textContent = message;
+  error.hidden = false;
+}
 
-  const rows = [
-    { label: `Vehículo · alquiler estimado (${c.tripDays} día(s))`, value: c.rentalCost },
-    { label: `${c.insurance.name} · ${c.insuranceDays} día(s)`, value: c.insuranceTotal },
-    { label: `Combustible · ${c.baseKm} km base + ${c.extraKm} km extra`, value: c.fuelTotal },
-    { label: `Comida · ${c.totalMeals} comida(s) · ${c.travelers} personas`, value: c.foodTotal },
-    { label: `Pernocta · ${c.stayNights} noche(s)`, value: c.stayTotal },
-    { label: "Total gastos extra", value: c.extraCost, emphasis: validExtras.length > 0 }
-  ];
+function clearError() {
+  const error = $("formError");
+  error.textContent = "";
+  error.hidden = true;
 
-  validExtras.forEach(item => {
-    rows.push({
-      label: `• ${item.name || "Gasto extra"}`,
-      value: Number(item.amount || 0),
-      subitem: true
-    });
+  document.querySelectorAll(".invalid").forEach((el) => {
+    el.classList.remove("invalid");
   });
-
-  rows.push(
-    { label: "Coste operativo total del grupo", value: c.operationalTotal, emphasis: true },
-    { label: c.share.label, value: c.share.perAdultCost, emphasis: true },
-    { label: "Fianza bloqueada aparte", value: c.insurance.deposit },
-    { label: "Desembolso inicial con fianza", value: c.initialBlock }
-  );
-
-  document.getElementById("cartList").innerHTML = rows
-    .map(row => `
-      <div class="cart-row ${row.emphasis ? "emphasis" : ""} ${row.subitem ? "subitem" : ""}">
-        <span>${row.label}</span>
-        <strong>${euro(row.value)}</strong>
-      </div>
-    `)
-    .join("");
 }
 
-function renderBudgetStatus(c) {
-  const status = document.getElementById("budgetStatus");
+function validateStep1() {
+  clearError();
 
-  if (c.personalBudget === null) {
-    status.textContent = "Sin presupuesto personal indicado. Se muestra solo el coste estimado por adulto.";
-    return;
+  let valid = true;
+
+  if (readNumber("adults", 0) < 1) {
+    $("adults").classList.add("invalid");
+    valid = false;
   }
 
-  if (c.missing <= 0) {
-    status.textContent = `Presupuesto personal indicado: ${euro(c.personalBudget)}. El cálculo queda por debajo de ese límite por ${euro(Math.abs(c.missing))}.`;
-    return;
+  if (readNumber("children", -1) < 0) {
+    $("children").classList.add("invalid");
+    valid = false;
   }
 
-  status.textContent = `Presupuesto personal indicado: ${euro(c.personalBudget)}. Para cubrir este escenario faltarían ${euro(c.missing)}.`;
+  if (!selectedRadio("vehicleMode")) {
+    document.querySelectorAll('input[name="vehicleMode"]')[0].closest(".option-grid").classList.add("invalid");
+    valid = false;
+  }
+
+  if (getVehicleMode() === "other") {
+    const days = getDays();
+
+    if (days === 2 && readNumber("otherRental2", 0) <= 0) {
+      $("otherRental2").classList.add("invalid");
+      valid = false;
+    }
+
+    if (days === 3 && readNumber("otherRental3", 0) <= 0) {
+      $("otherRental3").classList.add("invalid");
+      valid = false;
+    }
+  }
+
+  if (!selectedRadio("insurancePlan")) {
+    document.querySelectorAll('input[name="insurancePlan"]')[0].closest(".option-grid").classList.add("invalid");
+    valid = false;
+  }
+
+  if (!valid) {
+    showError("Selecciona o introduce los datos necesarios antes de continuar.");
+  }
+
+  return valid;
 }
 
-function renderStepUI() {
-  document.getElementById("stepCounter").textContent = `${currentStep}/4 · ${stepTitles[currentStep]}`;
-  document.getElementById("progressFill").style.width = `${currentStep * 25}%`;
+function validateStep2() {
+  clearError();
 
+  if (!selectedPreset) {
+    showError("Selecciona un perfil de gasto o introduce los valores manuales antes de continuar.");
+    return false;
+  }
+
+  return true;
+}
+
+function updateStepState() {
   document.querySelectorAll(".step-tab").forEach((tab) => {
     tab.classList.toggle("active", Number(tab.dataset.step) === currentStep);
   });
 
-  document.querySelector(".app-card").classList.toggle("steps-mode", currentStep !== 1);
-}
-
-function renderComputedLabels(c) {
-  const durationText = `${c.tripDays} día(s) / ${c.stayNights} noche(s)`;
-
-  document.getElementById("computedDurationMain").textContent = durationText;
-  document.getElementById("derivedDurationStep2").textContent = durationText;
-  document.getElementById("derivedTripDaysStep3").textContent = c.tripDays;
-  document.getElementById("derivedStayNightsStep3").textContent = c.stayNights;
-
-  document.getElementById("baseRentalLabel").textContent = euro(BASE_RENTAL_COST);
-  document.getElementById("dailyRentalLabel").textContent = euro(c.dailyRentalCost);
-
-  document.getElementById("computedRentalCost").textContent = euro(c.rentalCost);
-  document.getElementById("computedInsuranceCost").textContent = euro(c.insuranceTotal);
-  document.getElementById("computedFuelCost").textContent = euro(c.fuelTotal);
-  document.getElementById("computedFoodCost").textContent = euro(c.foodTotal);
-  document.getElementById("computedStayCost").textContent = euro(c.stayTotal);
-
-  document.getElementById("depositLabel").textContent = euro(c.insurance.deposit);
-  document.getElementById("insuranceNameLabel").textContent = c.insurance.name;
-  document.getElementById("insuranceDailyLabel").textContent = euro(c.insurance.dailyCost);
-  document.getElementById("insuranceDaysLabel").textContent = c.insuranceDays;
-}
-
-function render() {
-  updateConditionalFields();
-  updateFreeStayState();
-
-  const c = calculate();
-
-  document.getElementById("adultTotal").textContent = euro(c.share.perAdultCost);
-  document.getElementById("shareModeNote").textContent = c.share.note;
-
-  renderBudgetStatus(c);
-  renderCart(c);
-  renderStepUI();
-  renderComputedLabels(c);
-
-  const plan = getValue("insurancePlan");
-  document.getElementById("insuranceBasicCard").classList.toggle("active", plan === "basic");
-  document.getElementById("insuranceComfortCard").classList.toggle("active", plan === "comfort");
-}
-
-function scrollToActiveStep() {
-  const anchor = document.getElementById("stepAnchor");
-  if (!anchor) return;
-
-  setTimeout(() => {
-    anchor.scrollIntoView({
-      behavior: "smooth",
-      block: "start"
-    });
-  }, 40);
-}
-
-function setActiveStep(step, shouldScroll = true) {
-  currentStep = Math.min(Math.max(step, 1), 4);
-
-  document.querySelectorAll(".step").forEach((el) => {
-    el.classList.remove("active");
+  document.querySelectorAll(".step-panel").forEach((panel) => {
+    panel.classList.toggle("active", Number(panel.dataset.panel) === currentStep);
   });
+}
 
-  const activeStep = document.getElementById(`step${currentStep}`);
-  if (activeStep) {
-    activeStep.classList.add("active");
+function goToStep(step, shouldScroll = true) {
+  clearError();
+
+  if (step > currentStep) {
+    if (currentStep === 1 && !validateStep1()) return;
+    if (currentStep === 2 && !validateStep2()) return;
+  }
+
+  currentStep = Math.min(Math.max(step, 1), 3);
+  updateStepState();
+
+  if (currentStep === 3) {
+    $("sharePanel").hidden = true;
   }
 
   render();
 
   if (shouldScroll) {
-    scrollToActiveStep();
+    $("app").scrollIntoView({
+      behavior: "smooth",
+      block: "start"
+    });
   }
 }
 
-function goToStep(step) {
-  setActiveStep(step, true);
+function renderVehicleVisibility() {
+  const mode = getVehicleMode();
+
+  $("selectedVehicleBox").hidden = mode !== "selected";
+  $("otherVehicleBox").hidden = mode !== "other";
 }
 
-function nextStep() {
-  setActiveStep(currentStep + 1, true);
+function renderDepositIntro() {
+  const insurance = getInsurance();
+  $("depositIntroTitle").textContent = `Fianza bloqueada según ${insurance.name}: ${money(insurance.deposit)}`;
 }
 
-function prevStep() {
-  setActiveStep(currentStep - 1, true);
-}
+function renderPresetDetail() {
+  const detail = $("presetDetail");
 
-function goHome() {
-  setActiveStep(1, true);
-}
-
-function openMaps() {
-  const origin = encodeURIComponent(getValue("origin"));
-  const destination = encodeURIComponent(getValue("stayAddress") || getValue("destination"));
-
-  const url = `https://www.google.com/maps/dir/?api=1&origin=${origin}&destination=${destination}&travelmode=driving`;
-
-  window.open(url, "_blank", "noopener,noreferrer");
-}
-
-function confirmResetAll() {
-  const confirmed = window.confirm("¿Seguro que quieres reiniciar toda la simulación? Se perderán los cambios realizados.");
-
-  if (confirmed) {
-    resetApp();
+  if (selectedPreset === "manual") {
+    detail.innerHTML = `
+      <strong>Edición manual activada</strong>
+      <ul>
+        <li>Combustible, comidas, camping y otros gastos pueden ajustarse manualmente.</li>
+        <li>Usa este modo si quieres simular una ruta, comida o pernocta diferente.</li>
+      </ul>
+    `;
+    $("manualDetails").hidden = false;
+    return;
   }
+
+  const preset = PRESETS[selectedPreset] || PRESETS.medium;
+
+  detail.innerHTML = `
+    <strong>${preset.label}</strong>
+    <ul>
+      <li>Comidas: ${preset.mealsPerDay} al día · ${money(preset.mealCost)} por persona</li>
+      <li>Actividades: ${money(preset.activities)}</li>
+      <li>Peajes: ${money(preset.tolls)}</li>
+      <li>Imprevistos: ${money(preset.contingency)}</li>
+      <li>Otros gastos extra: ${money(preset.other)}</li>
+    </ul>
+  `;
+
+  $("manualDetails").hidden = true;
 }
 
-function resetApp() {
-  Object.entries(defaults).forEach(([key, value]) => {
-    setValue(key, value);
+function renderManualVisibility() {
+  $("fuelManualFields").hidden = selectedRadio("fuelMode", "reference") !== "manual";
+  $("foodManualFields").hidden = selectedRadio("foodMode", "reference") !== "manual";
+
+  const stayMode = selectedRadio("stayMode", "reference");
+  $("stayManualFields").hidden = stayMode !== "manual";
+  $("stayFreeFields").hidden = stayMode !== "free";
+}
+
+function renderExtras() {
+  const list = $("extrasList");
+
+  list.innerHTML = extras.map((item, index) => `
+    <div class="extra-row">
+      <input type="text" value="${escapeHtml(item.name)}" placeholder="Nombre del gasto extra" data-extra-index="${index}" data-extra-field="name">
+      <input type="number" min="0" step="0.01" value="${Number(item.amount || 0)}" placeholder="Coste (€)" data-extra-index="${index}" data-extra-field="amount">
+      <button class="icon-btn" type="button" data-remove-extra="${index}">×</button>
+    </div>
+  `).join("");
+
+  list.querySelectorAll("[data-extra-index]").forEach((input) => {
+    input.addEventListener("input", function () {
+      const index = Number(this.dataset.extraIndex);
+      const field = this.dataset.extraField;
+
+      if (!extras[index]) return;
+
+      extras[index][field] = field === "amount" ? Number(this.value || 0) : this.value;
+      render();
+    });
   });
 
-  extraItems = [
-    { name: "Otros gastos", amount: 0 }
-  ];
-
-  renderExtraItems();
-  updateFreeStayState();
-  setActiveStep(1, true);
-}
-
-function buildSummary() {
-  const c = calculate();
-  const userName = getValue("userName") || "Invitado sin nombre seleccionado";
-  const validExtras = getValidExtras();
-
-  let budgetLine = "No se indicó presupuesto personal para comparar.";
-
-  if (c.personalBudget !== null) {
-    budgetLine =
-      c.missing > 0
-        ? `Presupuesto indicado: ${euro(c.personalBudget)}. Faltaría cubrir: ${euro(c.missing)}.`
-        : `Presupuesto indicado: ${euro(c.personalBudget)}. El cálculo queda por debajo de ese límite por ${euro(Math.abs(c.missing))}.`;
-  }
-
-  const extrasText = validExtras.length
-    ? validExtras.map(item => `- ${item.name || "Gasto extra"}: ${euro(item.amount)}`).join("\n")
-    : "- Sin gastos extra añadidos";
-
-  return `YoloVar · Presupuesto viaje en autocaravana
-
-Consulta de: ${userName}
-Fechas: ${getValue("startDate")} al ${getValue("endDate")}
-Duración calculada: ${c.tripDays} día(s) / ${c.stayNights} noche(s)
-Ruta investigada: ${getValue("origin")} → ${getValue("destination")} → ${getValue("origin")}
-
-Autocaravana:
-Iguana Camp SIENA 435 “triple 7”
-Ficha: ${RV_PAGE_URL}
-Precio base investigado: ${euro(BASE_RENTAL_COST)} para 3 días / 2 noches
-Alquiler estimado según fechas: ${euro(c.rentalCost)}
-
-Personas:
-${c.adults} adultos + ${c.children} niños
-Adultos que pagan: ${getValue("payingAdults")}
-Distribución de gastos: ${c.share.note}
-
-Seguro:
-${c.insurance.name}
-Coste diario: ${euro(c.insurance.dailyCost)}
-Días calculados: ${c.insuranceDays}
-Total seguro: ${euro(c.insuranceTotal)}
-Fianza bloqueada: ${euro(c.insurance.deposit)}
-La fianza es un bloqueo, no un gasto si no hay daños.
-
-Combustible:
-Ruta base: ${c.baseKm} km
-Km extra: ${c.extraKm} km
-Consumo fijo usado: 10 L/100 km
-Diésel estimado: ${euro(c.fuelTotal)}
-
-Comida:
-Comidas totales consideradas: ${c.totalMeals}
-Coste por comida/persona: ${euro(c.mealCost)}
-Total comida: ${euro(c.foodTotal)}
-
-Pernocta:
-${getValue("stayName")}
-${getValue("stayAddress")}
-Área gratuita: ${c.isFreeStay ? "Sí" : "No"}
-Noches calculadas: ${c.stayNights}
-Coste por noche: ${euro(c.stayCostNight)}
-Coste pernocta: ${euro(c.stayTotal)}
-
-Gastos extra:
-${extrasText}
-Total gastos extra: ${euro(c.extraCost)}
-
-Coste operativo total del grupo: ${euro(c.operationalTotal)}
-Coste estimado por adulto: ${euro(c.share.perAdultCost)}
-
-${budgetLine}`;
-}
-
-async function copySummary() {
-  const text = buildSummary();
-
-  try {
-    await navigator.clipboard.writeText(text);
-    alert("Resumen copiado. Ya puedes pegarlo en WhatsApp.");
-  } catch (error) {
-    const area = document.createElement("textarea");
-    area.value = text;
-    document.body.appendChild(area);
-    area.select();
-    document.execCommand("copy");
-    document.body.removeChild(area);
-    alert("Resumen copiado.");
-  }
-}
-
-function downloadCSV() {
-  const c = calculate();
-  const userName = getValue("userName") || "Invitado sin nombre seleccionado";
-
-  const rows = [
-    ["Concepto", "Detalle", "Importe"],
-    ["Usuario", userName, ""],
-    ["Fechas", `${getValue("startDate")} al ${getValue("endDate")}`, ""],
-    ["Duración calculada", `${c.tripDays} días / ${c.stayNights} noches`, ""],
-    ["Ruta investigada", `${getValue("origin")} a ${getValue("destination")} y regreso`, ""],
-    ["Autocaravana", "Iguana Camp SIENA 435 triple 7", ""],
-    ["Ficha autocaravana", RV_PAGE_URL, ""],
-    ["Precio base investigado", "3 días / 2 noches", BASE_RENTAL_COST],
-    ["Alquiler estimado", "Proporcional según fechas", c.rentalCost],
-    ["Adultos", c.adults, ""],
-    ["Niños", c.children, ""],
-    ["Adultos que pagan", getValue("payingAdults"), ""],
-    ["Distribución de gastos", c.share.note, ""],
-    ["Seguro", `${c.insurance.name} · ${c.insuranceDays} días`, c.insuranceTotal],
-    ["Fianza bloqueada", c.insurance.name, c.insurance.deposit],
-    ["Ruta base km", c.baseKm, ""],
-    ["Km extra", c.extraKm, ""],
-    ["Diésel", `${c.totalKm} km · ${c.fuelLiters.toFixed(1)} litros`, c.fuelTotal],
-    ["Comidas totales consideradas", c.totalMeals, ""],
-    ["Comida", `${c.totalMeals} comidas · ${c.travelers} personas`, c.foodTotal],
-    ["Área gratuita", c.isFreeStay ? "Sí" : "No", ""],
-    ["Noches de pernocta", c.stayNights, ""],
-    ["Pernocta", `${getValue("stayName")} · ${getValue("stayAddress")}`, c.stayTotal],
-    ["Total gastos extra", getExtrasSummary(), c.extraCost],
-    ["Coste operativo total", "Sin fianza", c.operationalTotal],
-    ["Coste estimado por adulto", c.share.label, c.share.perAdultCost],
-    ["Desembolso inicial", "Coste operativo + fianza", c.initialBlock]
-  ];
-
-  getValidExtras().forEach(item => {
-    rows.push(["Gasto extra individual", item.name || "Gasto extra", Number(item.amount || 0)]);
-  });
-
-  const csv = rows
-    .map((row) =>
-      row.map((cell) => `"${String(cell).replaceAll('"', '""')}"`).join(",")
-    )
-    .join("\n");
-
-  const blob = new Blob([csv], {
-    type: "text/csv;charset=utf-8;"
-  });
-
-  const url = URL.createObjectURL(blob);
-  const link = document.createElement("a");
-
-  link.href = url;
-  link.download = "presupuesto-yolovar-autocaravana.csv";
-  document.body.appendChild(link);
-  link.click();
-  document.body.removeChild(link);
-
-  URL.revokeObjectURL(url);
-}
-
-async function shareSummary() {
-  const text = buildSummary();
-
-  if (navigator.share) {
-    try {
-      await navigator.share({
-        title: "YoloVar · Presupuesto viaje",
-        text
-      });
-    } catch (error) {
-      console.log("Compartir cancelado o no disponible");
-    }
-  } else {
-    await copySummary();
-  }
-}
-
-function attachAutoSelect() {
-  document.querySelectorAll("input.auto-select, input.editable-control").forEach((input) => {
-    input.addEventListener("focus", function () {
-      if (this.type !== "checkbox" && !this.disabled) {
-        setTimeout(() => this.select(), 40);
-      }
+  list.querySelectorAll("[data-remove-extra]").forEach((button) => {
+    button.addEventListener("click", function () {
+      extras.splice(Number(this.dataset.removeExtra), 1);
+      renderExtras();
+      render();
     });
   });
 }
 
-document.querySelectorAll("input, select").forEach((input) => {
-  input.addEventListener("input", () => {
-    if (input.id === "foodPlan") {
-      syncFoodPlan();
-    }
+function addExtra() {
+  extras.push({ name: "", amount: 0 });
+  renderExtras();
+  render();
+}
 
-    if (input.id === "isFreeStay") {
-      updateFreeStayState();
+function getBreakdownSections(c) {
+  const sections = [
+    {
+      title: "Datos del viaje",
+      rows: [
+        ["Autocaravana", c.vehicleName],
+        ["Duración", `${c.days} días / ${c.nights} noche${c.nights === 1 ? "" : "s"}`],
+        ["Adultos", c.adults],
+        ["Niños", c.children],
+        ["Seguro seleccionado", c.insurance.name],
+        ["Fianza bloqueada", money(c.insurance.deposit)]
+      ]
+    },
+    {
+      title: "Resultado",
+      rows: [
+        ["Total estimado sin fianza", money(c.total)],
+        ["Opción A · coste por adulto", money(c.sharedAdultCost)],
+        ["Opción B · adulto sin niño", money(c.adultWithoutChild)],
+        ["Opción B · adulto con 1 niño", money(c.adultWithOneChild)],
+        ["Opción B · adulto con 2 niños", money(c.adultWithTwoChildren)]
+      ]
+    },
+    {
+      title: "Distribución del coste",
+      rows: [
+        ["Grupo", `${c.adults} adulto(s) y ${c.children} niño(s)`],
+        ["Opción A", "Divide el total del viaje entre los adultos asistentes."],
+        ["Opción B", "Separa el coste de un adulto sin niño y el coste de un adulto responsable de un niño."]
+      ]
+    },
+    {
+      title: "Gastos principales",
+      rows: [
+        ["Alquiler autocaravana", money(c.rental)],
+        ["Seguro", money(c.insuranceCost)],
+        ["Combustible", money(c.fuel)],
+        ["Comidas adultos", money(c.adultFoodCost)],
+        ["Comidas niños", money(c.childFoodCost)],
+        ["Pernocta adultos", money(c.adultStayCost)],
+        ["Pernocta niños", money(c.childStayCost)],
+        ["Parking autocaravana", money(c.parkingCost)],
+        ["Actividades", money(c.other.activities)],
+        ["Peajes", money(c.other.tolls)],
+        ["Imprevistos", money(c.other.contingency)],
+        ["Gastos extra", money(c.other.extras)]
+      ]
+    },
+    {
+      title: "Pernocta seleccionada",
+      rows: [
+        ["Tipo", c.stay.typeLabel]
+      ]
     }
+  ];
 
-    normalizeIntegerInputs();
-    render();
+  if (c.stay.mode === "free") {
+    sections[4].rows.push(["Lugar", c.stay.freeName || "No indicado"]);
+    sections[4].rows.push(["Ubicación", c.stay.freeLocation || "No indicada"]);
+  }
+
+  if (c.stay.mode === "manual") {
+    sections[4].rows.push(["Adulto/noche", money(c.stay.adultNight)]);
+    sections[4].rows.push(["Niño/noche", money(c.stay.childNight)]);
+    sections[4].rows.push(["Parking/noche", money(c.stay.rvParking)]);
+  }
+
+  if (extras.length > 0 && selectedPreset === "manual") {
+    sections.push({
+      title: "Gastos extra introducidos",
+      rows: extras.map((item) => [
+        item.name || "Gasto extra",
+        money(item.amount)
+      ])
+    });
+  }
+
+  return sections;
+}
+
+function renderBreakdown(c) {
+  const sections = getBreakdownSections(c);
+
+  $("breakdownList").innerHTML = sections.map((section) => {
+    const rows = section.rows.map(([label, value]) => {
+      const safeLabel = escapeHtml(label);
+      const safeValue = escapeHtml(value);
+
+      if (label === "Ubicación" && isValidUrl(value)) {
+        return `
+          <div class="break-row">
+            <span>${safeLabel}</span>
+            <a href="${safeValue}" target="_blank" rel="noopener noreferrer">Ver ubicación en Google Maps</a>
+          </div>
+        `;
+      }
+
+      return `
+        <div class="break-row">
+          <span>${safeLabel}</span>
+          <strong>${safeValue}</strong>
+        </div>
+      `;
+    }).join("");
+
+    return `
+      <section class="breakdown-section">
+        <h4>${escapeHtml(section.title)}</h4>
+        ${rows}
+      </section>
+    `;
+  }).join("");
+}
+
+function buildShareText(c) {
+  const sections = getBreakdownSections(c);
+
+  return sections.map((section) => {
+    const rows = section.rows.map(([label, value]) => `${label}: ${value}`).join("\n");
+    return `${section.title}\n${rows}`;
+  }).join("\n\n");
+}
+
+function renderResults(c) {
+  $("selectedRental3Label").textContent = money(SELECTED_RENTAL_3_DAYS);
+
+  $("sharedAdultCost").textContent = money(c.sharedAdultCost);
+  $("tripTotal").textContent = money(c.total);
+  $("adultWithoutChild").textContent = money(c.adultWithoutChild);
+  $("adultWithOneChild").textContent = money(c.adultWithOneChild);
+
+  $("depositShortLabel").textContent = `+ ${money(c.insurance.deposit)} bloqueados en cuenta`;
+  $("depositResultTitle").textContent = `Fianza bloqueada: ${money(c.insurance.deposit)}`;
+}
+
+function renderShare(c) {
+  $("shareText").value = buildShareText(c);
+}
+
+function setPreset(preset) {
+  selectedPreset = preset;
+
+  document.querySelectorAll(".preset-btn").forEach((btn) => {
+    btn.classList.toggle("active", btn.dataset.preset === preset);
   });
 
-  input.addEventListener("change", () => {
-    if (input.id === "foodPlan") {
-      syncFoodPlan();
-    }
+  render();
+}
 
-    if (input.id === "isFreeStay") {
-      updateFreeStayState();
-    }
+function openMaps() {
+  const location = $("freeStayLocation").value.trim() || "Valencia de Don Juan, León";
+  const url = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(location)}`;
+  window.open(url, "_blank", "noopener,noreferrer");
+}
 
-    normalizeIntegerInputs();
-    render();
+function render() {
+  renderVehicleVisibility();
+  renderDepositIntro();
+  renderPresetDetail();
+  renderManualVisibility();
+
+  const c = calculate();
+
+  renderResults(c);
+  renderBreakdown(c);
+  renderShare(c);
+}
+
+function init() {
+  $("selectedRental3Label").textContent = money(SELECTED_RENTAL_3_DAYS);
+
+  document.querySelectorAll("input").forEach((input) => {
+    input.addEventListener("input", render);
+    input.addEventListener("change", render);
   });
-});
 
-renderExtraItems();
-attachAutoSelect();
-updateFreeStayState();
-setActiveStep(1, false);
+  document.querySelectorAll(".step-tab").forEach((btn) => {
+    btn.addEventListener("click", () => goToStep(Number(btn.dataset.step), true));
+  });
+
+  document.querySelectorAll(".preset-btn").forEach((btn) => {
+    btn.addEventListener("click", () => setPreset(btn.dataset.preset));
+  });
+
+  $("startBtn").addEventListener("click", () => {
+    $("app").scrollIntoView({
+      behavior: "smooth",
+      block: "start"
+    });
+  });
+
+  $("step1NextBtn").addEventListener("click", () => goToStep(2, true));
+  $("step2BackBtn").addEventListener("click", () => goToStep(1, true));
+  $("step2NextBtn").addEventListener("click", () => goToStep(3, true));
+  $("restartNavBtn").addEventListener("click", () => goToStep(1, true));
+
+  $("addExtraBtn").addEventListener("click", addExtra);
+  $("mapsBtn").addEventListener("click", openMaps);
+
+  $("showShareBtn").addEventListener("click", () => {
+    $("sharePanel").hidden = false;
+    $("shareText").value = buildShareText(calculate());
+    $("sharePanel").scrollIntoView({
+      behavior: "smooth",
+      block: "start"
+    });
+  });
+
+  $("closeShareBtn").addEventListener("click", () => {
+    $("sharePanel").hidden = true;
+    $("breakdownList").scrollIntoView({
+      behavior: "smooth",
+      block: "start"
+    });
+  });
+
+  $("copyBtn").addEventListener("click", async () => {
+    try {
+      await navigator.clipboard.writeText($("shareText").value);
+      alert("Resumen copiado.");
+    } catch {
+      $("shareText").select();
+      document.execCommand("copy");
+      alert("Resumen copiado.");
+    }
+  });
+
+  $("whatsappBtn").addEventListener("click", () => {
+    const text = encodeURIComponent($("shareText").value);
+    window.open(`https://wa.me/?text=${text}`, "_blank", "noopener,noreferrer");
+  });
+
+  renderExtras();
+  updateStepState();
+  render();
+}
+
+document.addEventListener("DOMContentLoaded", init);
