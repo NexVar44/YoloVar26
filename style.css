@@ -1,20 +1,9 @@
 :root {
   --hero-url: url("https://raw.githubusercontent.com/NexVar44/YoloVar26/e959054393d415d0d18ed87f4832f0d5f09d8e16/assets/Wallpaper_YoloVar26.png");
 
-  /* MÓVIL · cambia este valor para subir o bajar el cuadro de texto inicial.
-     Valor positivo = baja el cuadro.
-     Valor negativo = sube el cuadro. */
   --hero-card-offset-y-mobile: 10mm;
-
-  /* MÓVIL · posición base del cuadro de texto inicial. */
   --hero-card-top-mobile: 18%;
-
-  /* MÓVIL · ancho máximo del cuadro de texto inicial. */
   --hero-card-max-width-mobile: 86%;
-
-  /* MÓVIL · cambia este valor para subir o bajar el botón inicial.
-     Valor mayor = botón más arriba.
-     Valor menor = botón más abajo. */
   --hero-button-bottom-mobile: 8%;
 
   --night: #071426;
@@ -30,25 +19,35 @@
   --gold-soft: #f1d89c;
   --white: #ffffff;
   --green-bg: #edf5ed;
-  --blue-bg: #eef3f6;
   --danger: #a2352a;
   --danger-bg: #f9e2df;
-  --radius-xl: 28px;
-  --radius-lg: 20px;
+  --radius-xl: 24px;
+  --radius-lg: 18px;
   --radius-md: 14px;
   --shadow: 0 24px 70px rgba(0, 0, 0, 0.16);
 }
 
-* {
+*,
+*::before,
+*::after {
   box-sizing: border-box;
+  min-width: 0;
 }
 
 html {
+  width: 100%;
+  max-width: 100%;
+  min-height: 100%;
+  overflow-x: hidden;
   scroll-behavior: smooth;
 }
 
 body {
+  width: 100%;
+  max-width: 100%;
+  min-height: 100%;
   margin: 0;
+  overflow-x: hidden;
   font-family: Inter, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
   color: var(--ink);
   background: var(--app-bg);
@@ -58,11 +57,23 @@ button,
 input,
 textarea {
   font: inherit;
+  max-width: 100%;
+}
+
+img,
+svg,
+canvas,
+video,
+iframe {
+  max-width: 100%;
 }
 
 .hero-cover {
   position: relative;
+  width: 100%;
+  max-width: 100%;
   min-height: 100vh;
+  min-height: 100svh;
   overflow: hidden;
   background-image: var(--hero-url);
   background-size: cover;
@@ -79,13 +90,14 @@ textarea {
   position: absolute;
   top: 18%;
   left: 50%;
-  transform: translateX(-50%);
   width: min(720px, 88%);
+  max-width: calc(100% - 24px);
   padding: 20px 22px;
   border-radius: 22px;
   color: var(--white);
   background: rgba(7, 20, 38, 0.34);
   backdrop-filter: blur(5px);
+  transform: translateX(-50%);
 }
 
 .hero-kicker {
@@ -125,10 +137,10 @@ textarea {
   position: absolute;
   left: 50%;
   bottom: 8%;
-  transform: translateX(-50%);
-  min-width: 220px;
+  width: min(260px, calc(100% - 32px));
   background: var(--gold);
   color: var(--night);
+  transform: translateX(-50%);
 }
 
 .btn.primary {
@@ -154,13 +166,18 @@ textarea {
 }
 
 .app-section {
-  padding: 28px 12px 48px;
+  width: 100%;
+  max-width: 100%;
+  overflow-x: hidden;
+  padding: 24px 10px 42px;
 }
 
 .app-shell {
-  width: min(1080px, 100%);
+  width: 100%;
+  max-width: 1080px;
   margin: 0 auto;
-  padding: 20px;
+  padding: 18px;
+  overflow: hidden;
   border-radius: var(--radius-xl);
   background: rgba(255, 250, 241, 0.98);
   box-shadow: var(--shadow);
@@ -190,6 +207,7 @@ textarea {
 .button-grid {
   display: grid;
   gap: 8px;
+  width: 100%;
 }
 
 .step-nav {
@@ -200,13 +218,16 @@ textarea {
 .step-tab,
 .preset-btn {
   min-height: 46px;
-  padding: 10px;
+  padding: 10px 6px;
   border: 1px solid var(--line);
   border-radius: var(--radius-md);
   background: var(--paper-2);
   color: var(--ink);
+  font-size: 14px;
   font-weight: 900;
   cursor: pointer;
+  white-space: normal;
+  overflow-wrap: anywhere;
 }
 
 .step-tab.active,
@@ -237,6 +258,8 @@ textarea {
 .card,
 .notice-card,
 .compact-note {
+  width: 100%;
+  max-width: 100%;
   border-radius: var(--radius-lg);
   border: 1px solid var(--line);
   background: var(--white);
@@ -271,18 +294,19 @@ textarea {
 .extras-list {
   display: grid;
   gap: 10px;
+  width: 100%;
 }
 
 .mini-grid {
-  grid-template-columns: repeat(2, 1fr);
+  grid-template-columns: repeat(2, minmax(0, 1fr));
 }
 
 .option-grid {
-  grid-template-columns: repeat(2, 1fr);
+  grid-template-columns: repeat(2, minmax(0, 1fr));
 }
 
 .option-grid.three {
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(3, minmax(0, 1fr));
 }
 
 .preset-top-grid {
@@ -344,6 +368,7 @@ input.invalid,
   border: 2px solid var(--line);
   border-radius: var(--radius-md);
   background: var(--paper-2);
+  overflow-wrap: anywhere;
 }
 
 .option-card.compact-option span {
@@ -367,8 +392,11 @@ input.invalid,
 
 .preset-detail,
 .sub-card {
+  width: 100%;
+  max-width: 100%;
   margin-top: 12px;
   padding: 13px;
+  overflow: hidden;
   border-radius: var(--radius-md);
   background: var(--white);
   border: 1px solid var(--line);
@@ -397,10 +425,11 @@ input.invalid,
   border: 1px solid var(--line);
   color: var(--forest-dark);
   font-weight: 850;
+  overflow-wrap: anywhere;
 }
 
 .result-grid {
-  grid-template-columns: 1.4fr 1fr 1fr 1fr;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
 }
 
 .result-card {
@@ -408,6 +437,7 @@ input.invalid,
   border-radius: var(--radius-lg);
   background: var(--white);
   border: 1px solid rgba(31, 77, 56, 0.22);
+  overflow: hidden;
 }
 
 .result-card.main {
@@ -423,6 +453,7 @@ input.invalid,
   font-weight: 900;
   letter-spacing: 0.04em;
   text-transform: uppercase;
+  overflow-wrap: anywhere;
 }
 
 .result-card.main span,
@@ -432,9 +463,10 @@ input.invalid,
 
 .result-card strong {
   display: block;
-  font-size: clamp(30px, 4vw, 46px);
+  font-size: clamp(28px, 4vw, 46px);
   line-height: 1;
   letter-spacing: -0.05em;
+  overflow-wrap: anywhere;
 }
 
 .result-card small {
@@ -486,7 +518,7 @@ input.invalid,
 
 .break-row {
   display: grid;
-  grid-template-columns: 1fr auto;
+  grid-template-columns: minmax(0, 1fr) minmax(0, auto);
   gap: 12px;
   align-items: start;
 }
@@ -497,9 +529,11 @@ input.invalid,
 
 .break-row strong,
 .break-row a {
+  max-width: 100%;
   text-align: right;
   color: var(--ink);
   font-weight: 900;
+  overflow-wrap: anywhere;
   word-break: break-word;
 }
 
@@ -515,7 +549,7 @@ input.invalid,
 
 .extra-row {
   display: grid;
-  grid-template-columns: 1fr 160px 44px;
+  grid-template-columns: minmax(0, 1fr) 160px 44px;
   gap: 10px;
   align-items: end;
 }
@@ -524,14 +558,8 @@ input.invalid,
   margin-top: 0;
 }
 
-.add-extra-button {
-  margin-top: 3mm;
-}
-
-.stay-location-label {
-  margin-top: 3mm;
-}
-
+.add-extra-button,
+.stay-location-label,
 .maps-button {
   margin-top: 3mm;
 }
@@ -552,13 +580,13 @@ input.invalid,
 }
 
 .button-grid {
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
   margin-top: 12px;
 }
 
 .step-actions {
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 10px;
   margin-top: 14px;
 }
@@ -594,6 +622,7 @@ input.invalid,
   .hero-content {
     top: var(--hero-card-top-mobile);
     width: min(var(--hero-card-max-width-mobile), 420px);
+    max-width: calc(100% - 24px);
     padding: 12px 14px;
     border-radius: 18px;
     background: rgba(7, 20, 38, 0.32);
@@ -617,26 +646,32 @@ input.invalid,
 
   .hero-btn {
     bottom: var(--hero-button-bottom-mobile);
-    min-width: 220px;
+  }
+
+  .app-section {
+    padding: 18px 8px 36px;
   }
 
   .app-shell {
-    padding: 14px;
-    border-radius: 22px;
+    padding: 12px;
+    border-radius: 20px;
   }
 
   .step-nav {
     grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 6px;
   }
 
   .step-tab {
     min-height: 42px;
     padding: 8px 4px;
-    font-size: 12px;
+    font-size: 11px;
+    letter-spacing: -0.01em;
   }
 
   .preset-top-grid {
     grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 6px;
   }
 
   .preset-top-grid .preset-btn {
@@ -653,8 +688,12 @@ input.invalid,
     grid-template-columns: 1fr;
   }
 
+  .card {
+    padding: 14px;
+  }
+
   .step-actions {
-    grid-template-columns: 1fr 1fr;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
   .step-actions.single {
@@ -673,6 +712,11 @@ input.invalid,
 
   .option-card span {
     min-height: auto;
+  }
+
+  .reference-box {
+    display: grid;
+    grid-template-columns: 1fr;
   }
 
   .extra-row {
@@ -694,6 +738,23 @@ input.invalid,
   .break-row strong,
   .break-row a {
     text-align: left;
+  }
+}
+
+@media (max-width: 380px) {
+  .app-section {
+    padding-left: 6px;
+    padding-right: 6px;
+  }
+
+  .app-shell {
+    padding: 10px;
+    border-radius: 18px;
+  }
+
+  .step-tab,
+  .preset-top-grid .preset-btn {
+    font-size: 10.5px;
   }
 }
 
