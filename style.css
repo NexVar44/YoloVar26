@@ -34,17 +34,24 @@
   min-width: 0;
 }
 
-html,
+html {
+  width: 100%;
+  max-width: 100%;
+  min-height: 100%;
+  margin: 0;
+  padding: 0;
+  overflow-x: hidden;
+  scroll-behavior: smooth;
+}
+
 body {
   width: 100%;
   max-width: 100%;
   min-height: 100%;
   margin: 0;
   padding: 0;
-  overflow-x: clip;
-}
-
-body {
+  overflow-x: hidden;
+  touch-action: pan-y;
   font-family: Inter, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
   color: var(--ink);
   background: var(--app-bg);
@@ -71,7 +78,8 @@ iframe {
   max-width: 100%;
   min-height: 100vh;
   min-height: 100svh;
-  overflow: clip;
+  margin: 0;
+  overflow: hidden;
   background-image: var(--hero-url);
   background-size: cover;
   background-position: center;
@@ -164,7 +172,8 @@ iframe {
 .app-section {
   width: 100%;
   max-width: 100%;
-  overflow-x: clip;
+  margin: 0;
+  overflow-x: hidden;
   padding: 24px 10px 42px;
 }
 
@@ -173,7 +182,7 @@ iframe {
   max-width: 1080px;
   margin: 0 auto;
   padding: 18px;
-  overflow: clip;
+  overflow-x: hidden;
   border-radius: var(--radius-xl);
   background: rgba(255, 250, 241, 0.98);
   box-shadow: var(--shadow);
@@ -392,7 +401,7 @@ input.invalid,
   max-width: 100%;
   margin-top: 12px;
   padding: 13px;
-  overflow: clip;
+  overflow-x: hidden;
   border-radius: var(--radius-md);
   background: var(--white);
   border: 1px solid var(--line);
@@ -433,7 +442,7 @@ input.invalid,
   border-radius: var(--radius-lg);
   background: var(--white);
   border: 1px solid rgba(31, 77, 56, 0.22);
-  overflow: clip;
+  overflow-x: hidden;
 }
 
 .result-card.main {
@@ -615,14 +624,37 @@ input.invalid,
 }
 
 @media (max-width: 860px) {
+  html,
+  body {
+    width: 100%;
+    max-width: 100%;
+    overflow-x: hidden;
+  }
+
+  body {
+    position: relative;
+  }
+
+  .hero-cover {
+    width: 100%;
+    max-width: 100%;
+    min-height: 100svh;
+    margin: 0;
+    overflow: hidden;
+    background-size: cover;
+    background-position: center center;
+  }
+
   .hero-content {
     top: var(--hero-card-top-mobile);
-    width: min(var(--hero-card-max-width-mobile), 420px);
-    max-width: calc(100% - 24px);
+    left: 12px;
+    right: 12px;
+    width: auto;
+    max-width: none;
     padding: 12px 14px;
     border-radius: 18px;
     background: rgba(7, 20, 38, 0.32);
-    transform: translateX(-50%) translateY(var(--hero-card-offset-y-mobile));
+    transform: translateY(var(--hero-card-offset-y-mobile));
   }
 
   .hero-kicker {
@@ -641,19 +673,45 @@ input.invalid,
   }
 
   .hero-btn {
+    left: 50%;
     bottom: var(--hero-button-bottom-mobile);
+    width: calc(100% - 64px);
+    max-width: 280px;
+    transform: translateX(-50%);
   }
 
   .app-section {
-    padding: 18px 0 36px;
+    width: 100%;
+    max-width: 100%;
+    margin: 0;
+    padding: 0 0 36px;
+    overflow-x: hidden;
   }
 
   .app-shell {
     width: 100%;
     max-width: 100%;
+    margin: 0;
     padding: 12px;
     border-radius: 0;
     box-shadow: none;
+    overflow-x: hidden;
+  }
+
+  .app-header,
+  .step-nav,
+  .step-panel,
+  .card,
+  .compact-note,
+  .notice-card,
+  .option-grid,
+  .mini-grid,
+  .preset-top-grid,
+  .result-grid,
+  .step-actions {
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
   }
 
   .step-nav {
@@ -663,8 +721,8 @@ input.invalid,
 
   .step-tab {
     min-height: 42px;
-    padding: 8px 4px;
-    font-size: 11px;
+    padding: 8px 3px;
+    font-size: 10.5px;
     letter-spacing: -0.01em;
   }
 
@@ -744,99 +802,5 @@ input.invalid,
   .step-nav,
   .preset-top-grid {
     grid-template-columns: 1fr;
-  }
-}
-/* CORRECCIÓN FINAL MÓVIL · sin espacio lateral ni inferior */
-@media (max-width: 860px) {
-  html,
-  body {
-    width: 100%;
-    max-width: 100%;
-    min-width: 0;
-    margin: 0;
-    padding: 0;
-    overflow-x: hidden;
-  }
-
-  body {
-    background: var(--app-bg);
-  }
-
-  .hero-cover {
-    width: 100%;
-    max-width: 100%;
-    min-width: 0;
-    min-height: 100svh;
-    margin: 0;
-    overflow: hidden;
-  }
-
-  .hero-content {
-    left: 12px;
-    right: 12px;
-    width: auto;
-    max-width: none;
-    transform: translateY(var(--hero-card-offset-y-mobile));
-  }
-
-  .hero-btn {
-    left: 50%;
-    width: calc(100% - 64px);
-    max-width: 280px;
-    transform: translateX(-50%);
-  }
-
-  .app-section {
-    width: 100%;
-    max-width: 100%;
-    min-width: 0;
-    margin: 0;
-    padding: 0 0 32px;
-    overflow: hidden;
-  }
-
-  .app-shell {
-    width: 100%;
-    max-width: 100%;
-    min-width: 0;
-    margin: 0;
-    padding: 12px;
-    border-radius: 0;
-    box-shadow: none;
-    overflow: hidden;
-  }
-
-  .app-header,
-  .step-nav,
-  .step-panel,
-  .card,
-  .compact-note,
-  .notice-card,
-  .option-grid,
-  .mini-grid,
-  .preset-top-grid,
-  .result-grid,
-  .step-actions {
-    width: 100%;
-    max-width: 100%;
-    min-width: 0;
-  }
-
-  .option-grid,
-  .option-grid.three,
-  .mini-grid,
-  .preset-top-grid,
-  .result-grid {
-    grid-template-columns: 1fr;
-  }
-
-  .step-nav {
-    grid-template-columns: repeat(3, minmax(0, 1fr));
-  }
-
-  .step-tab {
-    font-size: 10.5px;
-    padding-left: 3px;
-    padding-right: 3px;
   }
 }
