@@ -111,7 +111,7 @@ function getRental(days) {
 }
 
 function getVehicleName() {
-  if (getVehicleMode() === "selected") return "Autocaravana investigada";
+  if (getVehicleMode() === "selected") return "Siena 435 7 Plazas";
   return $("otherVehicleName").value.trim() || "Otra autocaravana investigada";
 }
 
@@ -171,7 +171,7 @@ function getStayValues() {
   if (selectedPreset !== "manual") {
     return {
       mode: "reference",
-      typeLabel: "Camping investigado",
+      typeLabel: "Camping Pico Verde",
       adultNight: REFERENCE.campingAdult,
       childNight: REFERENCE.campingChild,
       rvParking: REFERENCE.rvParking,
@@ -233,7 +233,6 @@ function getOtherCosts() {
   }, 0);
 
   return {
-    activities: Math.max(readNumber("activitiesCost", 0), 0),
     tolls: Math.max(readNumber("tollsCost", 0), 0),
     contingency: Math.max(readNumber("contingencyCost", 0), 0),
     extras: extrasCost
@@ -267,7 +266,6 @@ function calculateForDays(days) {
     insuranceCost +
     fuel +
     parkingCost +
-    other.activities +
     other.tolls +
     other.contingency +
     other.extras;
@@ -560,7 +558,6 @@ function getBreakdownSections(c) {
         ["Pernocta adultos", money(c.adultStayCost)],
         ["Pernocta niños", money(c.childStayCost)],
         ["Parking autocaravana", money(c.parkingCost)],
-        ["Actividades", money(c.other.activities)],
         ["Peajes", money(c.other.tolls)],
         ["Imprevistos", money(c.other.contingency)],
         ["Gastos extra", money(c.other.extras)]
