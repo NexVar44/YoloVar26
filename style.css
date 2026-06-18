@@ -746,3 +746,97 @@ input.invalid,
     grid-template-columns: 1fr;
   }
 }
+/* CORRECCIÓN FINAL MÓVIL · sin espacio lateral ni inferior */
+@media (max-width: 860px) {
+  html,
+  body {
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
+    margin: 0;
+    padding: 0;
+    overflow-x: hidden;
+  }
+
+  body {
+    background: var(--app-bg);
+  }
+
+  .hero-cover {
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
+    min-height: 100svh;
+    margin: 0;
+    overflow: hidden;
+  }
+
+  .hero-content {
+    left: 12px;
+    right: 12px;
+    width: auto;
+    max-width: none;
+    transform: translateY(var(--hero-card-offset-y-mobile));
+  }
+
+  .hero-btn {
+    left: 50%;
+    width: calc(100% - 64px);
+    max-width: 280px;
+    transform: translateX(-50%);
+  }
+
+  .app-section {
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
+    margin: 0;
+    padding: 0 0 32px;
+    overflow: hidden;
+  }
+
+  .app-shell {
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
+    margin: 0;
+    padding: 12px;
+    border-radius: 0;
+    box-shadow: none;
+    overflow: hidden;
+  }
+
+  .app-header,
+  .step-nav,
+  .step-panel,
+  .card,
+  .compact-note,
+  .notice-card,
+  .option-grid,
+  .mini-grid,
+  .preset-top-grid,
+  .result-grid,
+  .step-actions {
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
+  }
+
+  .option-grid,
+  .option-grid.three,
+  .mini-grid,
+  .preset-top-grid,
+  .result-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .step-nav {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  .step-tab {
+    font-size: 10.5px;
+    padding-left: 3px;
+    padding-right: 3px;
+  }
+}
