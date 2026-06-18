@@ -112,26 +112,19 @@ function getFuelCost() {
 
   return (km * consumption / 100) * diesel;
 }
-
 function getFoodValues() {
-  return {
-    totalMeals: Math.max(Math.round(readNumber("totalMeals", 6)), 0),
-    mealCost: Math.max(readNumber("mealCost", 5), 0)
-  };
-}
-
   const mode = selectedRadio("foodMode", "reference");
 
   if (mode === "reference") {
     return {
-      mealsPerDay: 4,
+      totalMeals: 6,
       mealCost: 5
     };
   }
 
   return {
-    mealsPerDay: clamp(Math.round(readNumber("mealsPerDay", 4)), 3, 5),
-    mealCost: clamp(readNumber("mealCost", 5), 3, 10)
+    totalMeals: Math.max(Math.round(readNumber("totalMeals", 6)), 0),
+    mealCost: Math.max(readNumber("mealCost", 5), 0)
   };
 }
 
@@ -218,8 +211,8 @@ function calculateForDays(days) {
   const fuel = getFuelCost();
 
   const food = getFoodValues();
-  const adultFoodCost = adults * food.mealsPerDay * food.mealCost;
-  const childFoodCost = children * food.mealsPerDay * food.mealCost;
+  const adultFoodCost = adults * food.totalMeals * food.mealCost;
+  const childFoodCost = children * food.totalMeals * food.mealCost;
 
   const stay = getStayValues();
   const adultStayCost = adults * nights * stay.adultNight;
@@ -404,21 +397,6 @@ function renderDepositIntro() {
   const insurance = getInsurance();
   $("depositIntroTitle").textContent = `Fianza bloqueada según ${insurance.name}: ${money(insurance.deposit)}`;
 }
-
-function renderPresetDetail() {
-  const detail = $("presetDetail");
-
-  if (selectedPreset === "manual") {
-    detail.innerHTML = `
-      <strong>Edición manual activada</strong>
-      <ul>
-        <li>Combustible, comidas, camping y otros gastos pueden ajustarse manualmente.</li>
-        <li>Usa este modo si quieres simular una ruta, comida o pernocta diferente.</li>
-      </ul>
-    `;
-    $("manualDetails").hidden = false;
-    return;
-  }
 
   const preset = PRESETS[selectedPreset] || PRESETS.medium;
 
@@ -643,16 +621,6 @@ function renderShare(c) {
   $("shareText").value = buildShareText(c);
 }
 
-function setPreset(preset) {
-  selectedPreset = preset;
-
-  document.querySelectorAll(".preset-btn").forEach((btn) => {
-    btn.classList.toggle("active", btn.dataset.preset === preset);
-  });
-
-  render();
-}
-
 function openMaps() {
   const location = $("freeStayLocation").value.trim() || "Valencia de Don Juan, León";
   const url = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(location)}`;
@@ -662,7 +630,6 @@ function openMaps() {
 function render() {
   renderVehicleVisibility();
   renderDepositIntro();
-  renderPresetDetail();
   renderManualVisibility();
 
   const c = calculate();
@@ -682,10 +649,6 @@ function init() {
 
   document.querySelectorAll(".step-tab").forEach((btn) => {
     btn.addEventListener("click", () => goToStep(Number(btn.dataset.step), true));
-  });
-
-  document.querySelectorAll(".preset-btn").forEach((btn) => {
-    btn.addEventListener("click", () => setPreset(btn.dataset.preset));
   });
 
   $("startBtn").addEventListener("click", () => {
