@@ -172,18 +172,9 @@
         <article class="card">
           <h3>Presupuesto orientativo</h3>
 
-          <div class="preset-top-grid">
-            <button class="preset-btn active" type="button" data-preset="low">Gasto bajo</button>
-            <button class="preset-btn" type="button" data-preset="medium">Gasto medio</button>
-            <button class="preset-btn" type="button" data-preset="high">Gasto alto</button>
-          </div>
-
-          <button class="preset-btn manual full-width" type="button" data-preset="manual">Editar detalles</button>
-
-          <div class="preset-detail" id="presetDetail"></div>
         </article>
 
-        <div id="manualDetails" hidden>
+        <div id="manualDetails">
           <article class="card">
             <h3>Combustible</h3>
 
@@ -254,12 +245,12 @@
             <div id="foodManualFields" class="sub-card" hidden>
               <div class="mini-grid">
                 <label>
-                  Comidas por día
-                  <input id="mealsPerDay" type="number" min="3" max="5" step="1" value="4">
+                  Comidas totales por persona
+                  <input id="totalMeals" type="number" min="0" step="1" value="6">
                 </label>
 
                 <label>
-                  Coste comida/persona (€)
+                  Coste medio por comida/persona (€)
                   <input id="mealCost" type="number" min="3" max="10" step="0.50" value="5">
                 </label>
               </div>
