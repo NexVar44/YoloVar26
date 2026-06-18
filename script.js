@@ -14,38 +14,8 @@ const INSURANCE = {
   comfort: { name: "Seguro confort", daily: 11.99, deposit: 750 }
 };
 
-const PRESETS = {
-  low: {
-    label: "Gasto bajo",
-    mealsPerDay: 3,
-    mealCost: 3,
-    activities: 0,
-    tolls: 0,
-    contingency: 20,
-    other: 0
-  },
-  medium: {
-    label: "Gasto medio",
-    mealsPerDay: 4,
-    mealCost: 5,
-    activities: 40,
-    tolls: 10,
-    contingency: 50,
-    other: 0
-  },
-  high: {
-    label: "Gasto alto",
-    mealsPerDay: 5,
-    mealCost: 10,
-    activities: 100,
-    tolls: 25,
-    contingency: 100,
-    other: 0
-  }
-};
-
 let currentStep = 1;
-let selectedPreset = "low";
+let selectedPreset = "manual";
 let extras = [];
 
 function $(id) {
@@ -144,13 +114,11 @@ function getFuelCost() {
 }
 
 function getFoodValues() {
-  if (selectedPreset !== "manual") {
-    const preset = PRESETS[selectedPreset] || PRESETS.medium;
-    return {
-      mealsPerDay: preset.mealsPerDay,
-      mealCost: preset.mealCost
-    };
-  }
+  return {
+    totalMeals: Math.max(Math.round(readNumber("totalMeals", 6)), 0),
+    mealCost: Math.max(readNumber("mealCost", 5), 0)
+  };
+}
 
   const mode = selectedRadio("foodMode", "reference");
 
@@ -218,18 +186,17 @@ function getStayValues() {
 }
 
 function getOtherCosts() {
-  if (selectedPreset !== "manual") {
-    const preset = PRESETS[selectedPreset] || PRESETS.medium;
-    return {
-      activities: preset.activities,
-      tolls: preset.tolls,
-      contingency: preset.contingency,
-      extras: preset.other
-    };
-  }
+  const people = Math.max(readNumber("adults", 5), 1) + Math.max(readNumber("children", 2), 0);
 
   const extrasCost = extras.reduce((sum, item) => {
-    return sum + Math.max(Number(item.amount || 0), 0);
+    const amount = Math.max(Number(item.amount || 0), 0);
+    const mode = item.mode || "trip";
+
+    if (mode === "person") {
+      return sum + (amount * people);
+    }
+
+    return sum + amount;
   }, 0);
 
   return {
@@ -251,8 +218,8 @@ function calculateForDays(days) {
   const fuel = getFuelCost();
 
   const food = getFoodValues();
-  const adultFoodCost = adults * days * food.mealsPerDay * food.mealCost;
-  const childFoodCost = children * days * food.mealsPerDay * food.mealCost;
+  const adultFoodCost = adults * food.mealsPerDay * food.mealCost;
+  const childFoodCost = children * food.mealsPerDay * food.mealCost;
 
   const stay = getStayValues();
   const adultStayCost = adults * nights * stay.adultNight;
@@ -483,22 +450,39 @@ function renderExtras() {
 
   list.innerHTML = extras.map((item, index) => `
     <div class="extra-row">
-      <input type="text" value="${escapeHtml(item.name)}" placeholder="Nombre del gasto extra" data-extra-index="${index}" data-extra-field="name">
-      <input type="number" min="0" step="0.01" value="${Number(item.amount || 0)}" placeholder="Coste (€)" data-extra-index="${index}" data-extra-field="amount">
-      <button class="icon-btn" type="button" data-remove-extra="${index}">×</button>
-    </div>
+  <input type="text" value="${escapeHtml(item.name)}" placeholder="Nombre del gasto extra" data-extra-index="${index}" data-extra-field="name">
+
+  <input type="number" min="0" step="0.01" value="${Number(item.amount || 0)}" placeholder="Coste (€)" data-extra-index="${index}" data-extra-field="amount">
+
+  <select data-extra-index="${index}" data-extra-field="mode">
+    <option value="trip" ${item.mode === "trip" ? "selected" : ""}>Sumarse una sola vez al viaje</option>
+    <option value="person" ${item.mode === "person" ? "selected" : ""}>Sumarse a cada persona del viaje</option>
+  </select>
+
+  <button class="icon-btn" type="button" data-remove-extra="${index}">×</button>
+</div>
   `).join("");
 
   list.querySelectorAll("[data-extra-index]").forEach((input) => {
     input.addEventListener("input", function () {
-      const index = Number(this.dataset.extraIndex);
-      const field = this.dataset.extraField;
+  const index = Number(this.dataset.extraIndex);
+  const field = this.dataset.extraField;
 
-      if (!extras[index]) return;
+  if (!extras[index]) return;
 
-      extras[index][field] = field === "amount" ? Number(this.value || 0) : this.value;
-      render();
-    });
+  extras[index][field] = field === "amount" ? Number(this.value || 0) : this.value;
+  render();
+});
+
+input.addEventListener("change", function () {
+  const index = Number(this.dataset.extraIndex);
+  const field = this.dataset.extraField;
+
+  if (!extras[index]) return;
+
+  extras[index][field] = field === "amount" ? Number(this.value || 0) : this.value;
+  render();
+});
   });
 
   list.querySelectorAll("[data-remove-extra]").forEach((button) => {
@@ -511,7 +495,12 @@ function renderExtras() {
 }
 
 function addExtra() {
-  extras.push({ name: "", amount: 0 });
+  extras.push({
+    name: "",
+    amount: 0,
+    mode: "trip"
+  });
+
   renderExtras();
   render();
 }
