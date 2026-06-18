@@ -554,30 +554,21 @@ input.invalid,
 
 .extra-row {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) 160px 44px;
+  grid-template-columns: minmax(0, 1fr) 140px minmax(180px, 1fr) 44px;
   gap: 10px;
   align-items: end;
 }
 
-.extra-row input {
-  margin-top: 0;
-}
-
-.add-extra-button,
-.stay-location-label,
-.maps-button {
-  margin-top: 3mm;
-}
-
-.icon-btn {
+.extra-row select {
+  width: 100%;
   min-height: 46px;
-  border: 0;
+  margin-top: 0;
+  padding: 11px 12px;
+  border: 2px solid rgba(47, 125, 79, 0.26);
   border-radius: var(--radius-md);
-  background: #f1d8cf;
-  color: #802f24;
-  font-size: 22px;
-  font-weight: 900;
-  cursor: pointer;
+  background: var(--white);
+  color: var(--ink);
+  font-weight: 800;
 }
 
 .close-whatsapp {
@@ -802,5 +793,14 @@ input.invalid,
   .step-nav,
   .preset-top-grid {
     grid-template-columns: 1fr;
+  }
+}
+@media (max-width: 640px) {
+  .extra-row {
+    grid-template-columns: 1fr;
+  }
+
+  .extra-row .icon-btn {
+    width: 100%;
   }
 }
