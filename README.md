@@ -1,61 +1,40 @@
-# YoloVar26 — You Only Live Once Vargas 2026
+# YoloVar26
 
-**YoloVar26** es una aplicación web creada como proyecto personal y familiar para estimar el presupuesto aproximado de un posible viaje en autocaravana a León para ver el eclipse de agosto.
+**YoloVar26** es una aplicación web familiar para estimar el presupuesto aproximado de un viaje en autocaravana a León para ver el eclipse de agosto de 2026.
 
-El nombre **YoloVar26** nace de la frase **“You Only Live Once Vargas 2026”**, como una forma de recordar que algunas oportunidades especiales no siempre se repiten y que vale la pena evaluar, con datos claros, si una experiencia familiar puede hacerse posible.
+El nombre nace de la idea **“You Only Live Once Vargas 2026”**, como una invitación a valorar experiencias especiales en familia y analizar, con datos claros, si pueden hacerse posibles.
 
 ## Propósito
 
-La app reúne información investigada previamente sobre una posible opción de viaje en autocaravana, incluyendo referencias de:
+La aplicación permite calcular una estimación de gastos considerando:
 
-* Coste del vehículo.
-* Seguro.
-* Fianza o bloqueo.
-* Combustible.
-* Comida.
-* Pernocta o camping.
-* Gastos extras.
-* Distribución estimada del coste por persona.
+- Alquiler de autocaravana.
+- Seguro y fianza bloqueada.
+- Combustible.
+- Comidas.
+- Camping o pernocta.
+- Gastos extra.
+- Distribución del coste entre adultos y niños.
 
-El objetivo no es imponer un plan cerrado, sino ofrecer una herramienta sencilla para visualizar escenarios, modificar parámetros y entender cómo podrían cambiar los costes según las decisiones de cada persona o familia.
+## Funcionalidades
 
-## Funcionalidades principales
-
-* Estimación del coste total del viaje.
-* Cálculo aproximado del coste por adulto.
-* Ajuste de parámetros como comida, kilómetros, seguro, pernocta y gastos extra.
-* Comparación de diferentes escenarios de presupuesto.
-* Resumen final para copiar o compartir.
-* Interfaz pensada para uso móvil.
-
-## Idea familiar
-
-La intención de este proyecto es facilitar una conversación familiar sobre la posibilidad de realizar un plan diferente: viajar juntos, compartir una experiencia especial y valorar cómo organizarnos para que el presupuesto no sea una barrera automática.
-
-YoloVar busca ayudar a responder preguntas como:
-
-* ¿Cuánto costaría aproximadamente por persona?
-* ¿Qué gastos son fijos?
-* ¿Qué gastos se pueden ajustar?
-* ¿Qué alternativas podrían hacer el plan más viable?
-* ¿Cómo podríamos organizarnos entre todos?
+- Simulación de presupuesto familiar.
+- Ajuste de parámetros personalizados.
+- Desglose de gastos.
+- Comparación de distribución de costes.
+- Generación de resumen para compartir por WhatsApp.
+- Interfaz optimizada para móvil.
 
 ## Tecnologías utilizadas
 
-* HTML
-* CSS
-* JavaScript
+- HTML
+- CSS
+- JavaScript
 
-## Uso
+## Estado
 
-La aplicación puede abrirse desde el navegador y utilizarse directamente, sin instalación.
-
-Cada pantalla permite revisar o ajustar una parte del presupuesto. Al final, se genera un resumen con los principales datos del cálculo.
-
-## Estado del proyecto
-
-Proyecto personal en desarrollo, creado como ejercicio práctico de diseño, programación web y comunicación familiar.
+Proyecto personal creado para portafolio profesional y uso familiar.
 
 ## Autor
 
-Creado por Nex Var como proyecto personal para portafolio y uso familiar.
+Creado por LuisF.
