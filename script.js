@@ -549,7 +549,7 @@ function getBreakdownSections(c) {
   ]
 },
     {
-      title: "Gastos principales",
+      title: "Gastos principales del grupo",
       rows: [
         ["Alquiler autocaravana", money(c.rental)],
         ["Seguro", money(c.insuranceCost)],
