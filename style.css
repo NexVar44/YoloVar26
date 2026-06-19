@@ -923,3 +923,17 @@ background: #25653f;
 .extra-amount-label input {
   margin-top: 0;
 }
+.extra-amount-wrapper {
+  display: grid;
+  gap: 4px;
+}
+
+.extra-amount-wrapper small {
+  color: var(--forest-dark);
+  font-size: 12px;
+  font-weight: 900;
+}
+
+.extra-amount-wrapper input {
+  margin-top: 0;
+}
