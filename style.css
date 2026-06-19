@@ -869,3 +869,21 @@ background: #25653f;
   color: var(--muted);
   font-weight: 800;
 }
+.option-card input[type="radio"]:checked + span {
+  background: #d9ecd9 !important;
+  border: 3px solid #2f7d4f !important;
+  box-shadow: 0 0 0 4px rgba(47, 125, 79, 0.25) !important;
+}
+
+.option-card input[type="radio"]:checked + span strong {
+  color: #1f4d38;
+}
+
+.option-card input[type="radio"]:checked + span::before {
+  content: "✓ Seleccionado";
+  display: inline-block;
+  margin-bottom: 8px;
+  color: #1f4d38;
+  font-size: 0.85rem;
+  font-weight: 800;
+}
