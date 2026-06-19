@@ -543,13 +543,11 @@ function getBreakdownSections(c) {
 
   return [
     {
-      title: "Distribución del coste",
-      rows: [
-        ["Grupo", `${c.adults} adulto(s) y ${c.children} niño(s)`],
-        ["Opción A", "Divide el total del viaje entre los adultos asistentes."],
-        ["Opción B", "Separa el coste de un adulto sin niño y el coste de un adulto responsable de un niño."]
-      ]
-    },
+  title: "Distribución del coste",
+  rows: [
+    ["Grupo", `${c.adults} adulto(s) y ${c.children} niño(s)`]
+  ]
+},
     {
       title: "Gastos principales",
       rows: [
