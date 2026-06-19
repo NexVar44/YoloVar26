@@ -804,3 +804,20 @@ input.invalid,
     width: 100%;
   }
 }
+.vehicle-link-btn {
+display: inline-flex;
+align-items: center;
+justify-content: center;
+margin-top: 12px;
+padding: 10px 16px;
+border-radius: 12px;
+background: #2f7d4f;
+color: #fff;
+text-decoration: none;
+font-weight: 700;
+transition: 0.2s ease;
+}
+
+.vehicle-link-btn {
+background: #25653f;
+}
