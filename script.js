@@ -78,7 +78,7 @@ function getVehicleMode() {
 
 function getDays() {
   if (getVehicleMode() === "selected") return 3;
-  return Number(selectedRadio("otherTripDays", "2"));
+  return Math.min(Math.max(Math.round(readNumber("otherTripDaysInput", 2)), 1), 10);
 }
 
 function getRental(days) {
@@ -96,8 +96,24 @@ function getVehicleUrl() {
   return $("otherVehicleUrl").value.trim();
 }
 
-function getInsurance() {
-  return INSURANCE[selectedRadio("insurancePlan", "comfort")] || INSURANCE.comfort;
+function getInsuranceCost(days) {
+  if (getVehicleMode() === "selected") {
+    return getInsurance().daily * days;
+  }
+  return Math.max(readNumber("otherInsuranceCost", 0), 0);
+}
+function getDepositAmount() {
+  if (getVehicleMode() === "selected") {
+    return getInsurance().deposit;
+  }
+  return Math.max(readNumber("otherDepositAmount", 0), 0);
+}
+function getDepositCondition() {
+  if (getVehicleMode() === "selected") {
+    return "";
+  }
+
+  return $("otherDepositCondition").value.trim();
 }
 
 function getFuelCost() {
@@ -219,7 +235,9 @@ function calculateForDays(days) {
 
   const insurance = getInsurance();
   const rental = getRental(days);
-  const insuranceCost = insurance.daily * days;
+  const insuranceCost = getInsuranceCost(days);
+  const depositAmount = getDepositAmount();
+  const depositCondition = getDepositCondition();
   const fuel = getFuelCost();
 
   const food = getFoodValues();
@@ -267,6 +285,8 @@ function calculateForDays(days) {
     insurance,
     rental,
     insuranceCost,
+    depositAmount,
+    depositCondition,
     fuel,
     food,
     stay,
@@ -548,7 +568,7 @@ function getBreakdownSections(c) {
         ["Adultos", c.adults],
         ["Niños", c.children],
         ["Seguro seleccionado", c.insurance.name],
-        ["Fianza bloqueada", money(c.insurance.deposit)]
+        ["Fianza bloqueada", money(c.depositAmount)]
       ]
     },
     {
