@@ -746,7 +746,7 @@ function init() {
 });
 
   document.querySelectorAll(".step-tab").forEach((btn) => {
-    btn.addEventListener("click", () => goToStep(Number(btn.dataset.step), true));
+    btn.addEventListener("click", () => goToStep(Number(btn.dataset.step), false));
   });
 
   $("startBtn").addEventListener("click", () => {
