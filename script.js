@@ -644,8 +644,8 @@ function renderResults(c) {
   $("adultWithoutChild").textContent = money(c.adultWithoutChild);
   $("adultWithOneChild").textContent = money(c.adultWithOneChild);
 
-  $("depositShortLabel").textContent = `+ ${money(c.insurance.deposit)} bloqueados en cuenta`;
-  $("depositResultTitle").textContent = `Fianza bloqueada: ${money(c.insurance.deposit)}`;
+  $("depositShortLabel").textContent = `+ ${money(c.depositAmount)} bloqueados en cuenta`;
+$("depositResultTitle").textContent = `Fianza bloqueada: ${money(c.depositAmount)}`;
 }
 
 function buildShareText(c) {
