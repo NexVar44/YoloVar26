@@ -908,3 +908,18 @@ background: #25653f;
   appearance: textfield;
   -moz-appearance: textfield;
 }
+.extra-amount-label {
+  display: grid;
+  gap: 4px;
+  margin: 0;
+}
+
+.extra-amount-label span {
+  color: var(--forest-dark);
+  font-size: 12px;
+  font-weight: 900;
+}
+
+.extra-amount-label input {
+  margin-top: 0;
+}
