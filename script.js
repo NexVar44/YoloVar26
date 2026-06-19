@@ -440,7 +440,10 @@ function renderExtras() {
     <div class="extra-row">
   <input type="text" value="${escapeHtml(item.name)}" placeholder="Nombre del gasto extra" data-extra-index="${index}" data-extra-field="name">
 
-  <input type="number" min="0" step="0.01" value="${Number(item.amount || 0)}" placeholder="Importe en euros (€)" data-extra-index="${index}" data-extra-field="amount">
+ <label class="extra-amount-label">
+  <span>Importe (€)</span>
+  <input type="number" min="0" step="0.01" value="${Number(item.amount || 0)}" placeholder="Ejemplo: 5" data-extra-index="${index}" data-extra-field="amount">
+</label>
 
   <select data-extra-index="${index}" data-extra-field="mode">
     <option value="trip" ${item.mode === "trip" ? "selected" : ""}>Sumarse una sola vez al viaje</option>
