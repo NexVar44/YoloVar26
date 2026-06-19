@@ -436,7 +436,7 @@ function renderExtras() {
     <div class="extra-row">
   <input type="text" value="${escapeHtml(item.name)}" placeholder="Nombre del gasto extra" data-extra-index="${index}" data-extra-field="name">
 
-  <input type="number" min="0" step="0.01" value="${Number(item.amount || 0)}" placeholder="Coste (€)" data-extra-index="${index}" data-extra-field="amount">
+  <input type="number" min="0" step="0.01" value="${Number(item.amount || 0)}" placeholder="Importe en euros (€)" data-extra-index="${index}" data-extra-field="amount">
 
   <select data-extra-index="${index}" data-extra-field="mode">
     <option value="trip" ${item.mode === "trip" ? "selected" : ""}>Sumarse una sola vez al viaje</option>
@@ -726,9 +726,9 @@ function init() {
   });
 
   $("whatsappBtn").addEventListener("click", () => {
-    const text = encodeURIComponent($("shareText").value);
-    window.open(`https://wa.me/?text=${text}`, "_blank", "noopener,noreferrer");
-  });
+  const text = encodeURIComponent(buildShareText(calculate()));
+  window.location.href = `https://wa.me/?text=${text}`;
+});
 
   renderExtras();
   updateStepState();
