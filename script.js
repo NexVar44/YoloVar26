@@ -416,8 +416,8 @@ function goToStep(step, shouldScroll = true) {
       behavior: "smooth"
     });
   }, 50);
+  }
 }
-
 function renderVehicleVisibility() {
   const mode = getVehicleMode();
 
