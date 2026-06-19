@@ -556,9 +556,6 @@ function getBreakdownSections(c) {
   ];
 }
 
-  return sections;
-}
-
 function renderBreakdown(c) {
   const sections = getBreakdownSections(c);
 
