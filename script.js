@@ -1,5 +1,7 @@
 const SELECTED_RENTAL_3_DAYS = 401.88;
 
+const SELECTED_VEHICLE_URL = "https://www.camplify.es/rv/17531?startDate=2026-07-10&endDate=2026-07-12&hireType=4&excessReductionId=208";
+
 const REFERENCE = {
   km: 306,
   consumption: 10,
@@ -88,6 +90,11 @@ function getRental(days) {
 function getVehicleName() {
   if (getVehicleMode() === "selected") return "Siena 435 7 plazas";
   return $("otherVehicleName").value.trim() || "Otra autocaravana investigada";
+}
+
+function getVehicleUrl() {
+  if (getVehicleMode() === "selected") return SELECTED_VEHICLE_URL;
+  return $("otherVehicleUrl").value.trim();
 }
 
 function getInsurance() {
@@ -541,7 +548,7 @@ function getBreakdownSections(c) {
       title: "Desglose completo",
       rows: [
         ["Autocaravana", c.vehicleName],
-        ["Anuncio autocaravana", "https://www.camplify.es/rv/17531?startDate=2026-07-10&endDate=2026-07-12&hireType=4&excessReductionId=208"],
+        ["Anuncio autocaravana", getVehicleUrl()],
         ["Duración", `${c.days} días / ${c.nights} noche${c.nights === 1 ? "" : "s"}`],
         ["Adultos", c.adults],
         ["Niños", c.children],
