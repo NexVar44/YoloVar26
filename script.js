@@ -756,10 +756,10 @@ function init() {
     });
   });
 
-  $("step1NextBtn").addEventListener("click", () => goToStep(2, true));
-  $("step2BackBtn").addEventListener("click", () => goToStep(1, true));
-  $("step2NextBtn").addEventListener("click", () => goToStep(3, true));
-  $("restartNavBtn").addEventListener("click", () => goToStep(1, true));
+  $("step1NextBtn").addEventListener("click", () => goToStep(2, false));
+  $("step2BackBtn").addEventListener("click", () => goToStep(1, false));
+  $("step2NextBtn").addEventListener("click", () => goToStep(3, false));
+  $("restartNavBtn").addEventListener("click", () => goToStep(1, false));
 
   $("addExtraBtn").addEventListener("click", addExtra);
   $("mapsBtn").addEventListener("click", openMaps);
