@@ -723,9 +723,19 @@ function init() {
   $("selectedRental3Label").textContent = money(SELECTED_RENTAL_3_DAYS);
 
   document.querySelectorAll("input").forEach((input) => {
-    input.addEventListener("input", render);
-    input.addEventListener("change", render);
-  });
+  input.addEventListener("input", render);
+  input.addEventListener("change", render);
+
+  if (input.type === "number") {
+    input.addEventListener("focus", function () {
+      this.select();
+    });
+
+    input.addEventListener("click", function () {
+      this.select();
+    });
+  }
+});
 
   document.querySelectorAll(".step-tab").forEach((btn) => {
     btn.addEventListener("click", () => goToStep(Number(btn.dataset.step), true));
