@@ -409,14 +409,12 @@ function goToStep(step, shouldScroll = true) {
 
   if (shouldScroll) {
   setTimeout(() => {
-    const appTop = $("app").offsetTop;
-
-    window.scrollTo({
-      top: appTop,
-      behavior: "smooth"
+    document.getElementById("app").scrollIntoView({
+      behavior: "smooth",
+      block: "start"
     });
-  }, 50);
-  }
+  }, 150);
+}
 }
 function renderVehicleVisibility() {
   const mode = getVehicleMode();
