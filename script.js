@@ -78,13 +78,12 @@ function getVehicleMode() {
 
 function getDays() {
   if (getVehicleMode() === "selected") return 3;
-  return Number(selectedRadio("otherTripDays", "2"));
+  return 2;
 }
 
 function getRental(days) {
   if (getVehicleMode() === "selected") return SELECTED_RENTAL_3_DAYS;
-  if (days === 2) return Math.max(readNumber("otherRental2", 0), 0);
-  return Math.max(readNumber("otherRental3", 0), 0);
+  return Math.max(readNumber("otherRentalTotal", 0), 0);
 }
 
 function getVehicleName() {
@@ -329,18 +328,11 @@ function validateStep1() {
   }
 
   if (getVehicleMode() === "other") {
-    const days = getDays();
-
-    if (days === 2 && readNumber("otherRental2", 0) <= 0) {
-      $("otherRental2").classList.add("invalid");
-      valid = false;
-    }
-
-    if (days === 3 && readNumber("otherRental3", 0) <= 0) {
-      $("otherRental3").classList.add("invalid");
-      valid = false;
-    }
+  if (readNumber("otherRentalTotal", 0) <= 0) {
+    $("otherRentalTotal").classList.add("invalid");
+    valid = false;
   }
+}
 
   if (!selectedRadio("insurancePlan")) {
     document.querySelectorAll('input[name="insurancePlan"]')[0].closest(".option-grid").classList.add("invalid");
