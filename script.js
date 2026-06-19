@@ -398,20 +398,6 @@ function renderDepositIntro() {
   $("depositIntroTitle").textContent = `Fianza bloqueada según ${insurance.name}: ${money(insurance.deposit)}`;
 }
 
-  detail.innerHTML = `
-    <strong>${preset.label}</strong>
-    <ul>
-      <li>Comidas: ${preset.mealsPerDay} al día · ${money(preset.mealCost)} por persona</li>
-      <li>Actividades: ${money(preset.activities)}</li>
-      <li>Peajes: ${money(preset.tolls)}</li>
-      <li>Imprevistos: ${money(preset.contingency)}</li>
-      <li>Otros gastos extra: ${money(preset.other)}</li>
-    </ul>
-  `;
-
-  $("manualDetails").hidden = true;
-}
-
 function renderManualVisibility() {
   $("fuelManualFields").hidden = selectedRadio("fuelMode", "reference") !== "manual";
   $("foodManualFields").hidden = selectedRadio("foodMode", "reference") !== "manual";
