@@ -141,27 +141,17 @@ function getFoodValues() {
 }
 
 function getStayValues() {
-  if (selectedPreset !== "manual") {
-    return {
-      mode: "reference",
-      typeLabel: "Camping Pico Verde",
-      adultNight: REFERENCE.campingAdult,
-      childNight: REFERENCE.campingChild,
-      rvParking: REFERENCE.rvParking,
-      freeName: "",
-      freeLocation: ""
-    };
-  }
-
   const mode = selectedRadio("stayMode", "reference");
 
   if (mode === "free") {
     return {
-      mode,
+      mode: "free",
       typeLabel: "Gratuito",
       adultNight: 0,
       childNight: 0,
       rvParking: 0,
+      manualName: "",
+      manualLocation: "",
       freeName: $("freeStayName").value.trim(),
       freeLocation: $("freeStayLocation").value.trim()
     };
@@ -169,24 +159,26 @@ function getStayValues() {
 
   if (mode === "manual") {
     return {
-  mode,
-  typeLabel: "Manual",
-  adultNight: Math.max(readNumber("campingAdultNight", REFERENCE.campingAdult), 0),
-  childNight: Math.max(readNumber("campingChildNight", REFERENCE.campingChild), 0),
-  rvParking: Math.max(readNumber("rvParkingNight", REFERENCE.rvParking), 0),
-  manualName: $("manualStayName").value.trim(),
-  manualLocation: $("manualStayLocation").value.trim(),
-  freeName: "",
-  freeLocation: ""
-};
+      mode: "manual",
+      typeLabel: "Manual",
+      adultNight: Math.max(readNumber("campingAdultNight", REFERENCE.campingAdult), 0),
+      childNight: Math.max(readNumber("campingChildNight", REFERENCE.campingChild), 0),
+      rvParking: Math.max(readNumber("rvParkingNight", REFERENCE.rvParking), 0),
+      manualName: $("manualStayName").value.trim(),
+      manualLocation: $("manualStayLocation").value.trim(),
+      freeName: "",
+      freeLocation: ""
+    };
   }
 
   return {
-    mode,
+    mode: "reference",
     typeLabel: "Camping Pico Verde",
     adultNight: REFERENCE.campingAdult,
     childNight: REFERENCE.campingChild,
     rvParking: REFERENCE.rvParking,
+    manualName: "",
+    manualLocation: "",
     freeName: "",
     freeLocation: ""
   };
@@ -506,19 +498,19 @@ function getBreakdownSections(c) {
   } else if (c.stay.mode === "manual") {
     pernoctaRows = [
       ["Tipo", "Manual"],
+      ["Lugar", c.stay.manualName || "No indicado"],
+      ["Ubicación", c.stay.manualLocation || "No indicada"],
       ["Adulto/noche", money(c.stay.adultNight)],
       ["Niño/noche", money(c.stay.childNight)],
       ["Parking/noche", money(c.stay.rvParking)]
     ];
   } else {
     pernoctaRows = [
-  ["Tipo", "Manual"],
-  ["Lugar", c.stay.manualName || "No indicado"],
-  ["Ubicación", c.stay.manualLocation || "No indicada"],
-  ["Adulto/noche", money(c.stay.adultNight)],
-  ["Niño/noche", money(c.stay.childNight)],
-  ["Parking/noche", money(c.stay.rvParking)]
-];
+      ["Camping", "Camping Pico Verde"],
+      ["Dirección", "Carretera Mayorga Astorga, Km 27,6 · 24200 Valencia de Don Juan, León"],
+      ["Web camping", "https://www.verial.es/campingpicoverde/"],
+      ["Ubicación", "https://maps.app.goo.gl/y4dFhqsELfTtnaQN7"]
+    ];
   }
 
   return [
