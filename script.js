@@ -408,11 +408,14 @@ function goToStep(step, shouldScroll = true) {
   render();
 
   if (shouldScroll) {
-    document.querySelector(".app-header").scrollIntoView({
-      behavior: "smooth",
-      block: "start"
+  setTimeout(() => {
+    const appTop = $("app").offsetTop;
+
+    window.scrollTo({
+      top: appTop,
+      behavior: "smooth"
     });
-  }
+  }, 50);
 }
 
 function renderVehicleVisibility() {
