@@ -862,3 +862,10 @@ background: #25653f;
 #stayFreeFields .maps-button {
   margin-top: 18px;
 }
+.vehicle-link-placeholder {
+  display: inline-flex;
+  align-items: center;
+  min-height: 40px;
+  color: var(--muted);
+  font-weight: 800;
+}
