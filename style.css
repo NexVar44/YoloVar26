@@ -1,5 +1,5 @@
 :root {
-  --hero-url: url("https://raw.githubusercontent.com/NexVar44/YoloVar26/assets/Wallpaper_YoloVar26.png");
+  --hero-url: url("./assets/Wallpaper_YoloVar26.png");
 
   --hero-card-offset-y-mobile: 18mm;
   --hero-card-top-mobile: 18%;
