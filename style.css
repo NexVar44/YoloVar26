@@ -885,7 +885,7 @@ background: #25653f;
 
 .option-card input[type="radio"]:checked + span::before {
   content: "✓ SELECCIONADO";
-  display: inline-block;
+  display: center;
   align-self: center;
   width: fit-content;
   text-align: center;
