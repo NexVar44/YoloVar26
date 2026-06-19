@@ -512,11 +512,13 @@ function getBreakdownSections(c) {
     ];
   } else {
     pernoctaRows = [
-      ["Camping", "Camping Pico Verde"],
-      ["Dirección", "Carretera Mayorga Astorga, Km 27,6 · 24200 Valencia de Don Juan, León"],
-      ["Web camping", "https://www.verial.es/campingpicoverde/"],
-      ["Ubicación", "https://maps.app.goo.gl/y4dFhqsELfTtnaQN7"]
-    ];
+  ["Tipo", "Manual"],
+  ["Lugar", c.stay.manualName || "No indicado"],
+  ["Ubicación", c.stay.manualLocation || "No indicada"],
+  ["Adulto/noche", money(c.stay.adultNight)],
+  ["Niño/noche", money(c.stay.childNight)],
+  ["Parking/noche", money(c.stay.rvParking)]
+];
   }
 
   return [
@@ -649,8 +651,8 @@ function renderShare(c) {
   $("shareText").value = buildShareText(c);
 }
 
-function openMaps() {
-  const location = $("freeStayLocation").value.trim() || "Valencia de Don Juan, León";
+function openManualMaps() {
+  const location = $("manualStayLocation").value.trim() || "camping Valencia de Don Juan, León";
   const url = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(location)}`;
   window.open(url, "_blank", "noopener,noreferrer");
 }
@@ -693,6 +695,7 @@ function init() {
 
   $("addExtraBtn").addEventListener("click", addExtra);
   $("mapsBtn").addEventListener("click", openMaps);
+  $("manualMapsBtn").addEventListener("click", openManualMaps);
 
   $("showShareBtn").addEventListener("click", () => {
     $("sharePanel").hidden = false;
