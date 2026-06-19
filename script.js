@@ -81,7 +81,7 @@ function getRental(days) {
 }
 
 function getVehicleName() {
-  if (getVehicleMode() === "selected") return "Siena 435 7 Plazas";
+  if (getVehicleMode() === "selected") return "Siena 435 7 plazas";
   return $("otherVehicleName").value.trim() || "Otra autocaravana investigada";
 }
 
@@ -169,7 +169,7 @@ function getStayValues() {
 
   return {
     mode,
-    typeLabel: "Camping investigado",
+    typeLabel: "Camping Pico Verde",
     adultNight: REFERENCE.campingAdult,
     childNight: REFERENCE.campingChild,
     rvParking: REFERENCE.rvParking,
@@ -472,7 +472,7 @@ function getBreakdownSections(c) {
     {
       title: "Datos del viaje",
       rows: [
-        ["Autocaravana", c.vehicleName],
+        ["Autocaravana", c.vehicleName],["Anuncio autocaravana", "https://www.camplify.es/rv/17531?startDate=2026-07-10&endDate=2026-07-12&hireType=4&excessReductionId=208"],
         ["Duración", `${c.days} días / ${c.nights} noche${c.nights === 1 ? "" : "s"}`],
         ["Adultos", c.adults],
         ["Niños", c.children],
@@ -517,7 +517,10 @@ function getBreakdownSections(c) {
     {
       title: "Pernocta seleccionada",
       rows: [
-        ["Tipo", c.stay.typeLabel]
+        ["Camping", c.stay.typeLabel],
+        ["Dirección", "Carretera Mayorga Astorga, Km 27,6 · 24200 Valencia de Don Juan, León"],
+        ["Web camping", "https://www.verial.es/campingpicoverde/"],
+        ["Ubicación", "https://maps.app.goo.gl/y4dFhqsELfTtnaQN7"]
       ]
     }
   ];
@@ -554,7 +557,25 @@ function renderBreakdown(c) {
       const safeLabel = escapeHtml(label);
       const safeValue = escapeHtml(value);
 
-      if (label === "Ubicación" && isValidUrl(value)) {
+      if (label === "Anuncio autocaravana" && isValidUrl(value)) {
+  return `
+    <div class="break-row">
+      <span>${safeLabel}</span>
+      <a href="${safeValue}" target="_blank" rel="noopener noreferrer">Ver anuncio de la autocaravana</a>
+    </div>
+  `;
+}
+
+if (label === "Web camping" && isValidUrl(value)) {
+  return `
+    <div class="break-row">
+      <span>${safeLabel}</span>
+      <a href="${safeValue}" target="_blank" rel="noopener noreferrer">Ver web del camping</a>
+    </div>
+  `;
+}
+
+if (label === "Ubicación" && isValidUrl(value)) {
         return `
           <div class="break-row">
             <span>${safeLabel}</span>
