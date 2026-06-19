@@ -702,13 +702,13 @@ function init() {
   $("manualMapsBtn").addEventListener("click", openManualMaps);
 
   $("showShareBtn").addEventListener("click", () => {
-    $("sharePanel").hidden = false;
-    $("shareText").value = buildShareText(calculate());
-    $("sharePanel").scrollIntoView({
-      behavior: "smooth",
-      block: "start"
-    });
+  $("shareText").value = buildShareText(calculate());
+  $("sharePanel").hidden = false;
+  $("sharePanel").scrollIntoView({
+    behavior: "smooth",
+    block: "start"
   });
+});
 
   $("closeShareBtn").addEventListener("click", () => {
     $("sharePanel").hidden = true;
@@ -731,7 +731,8 @@ function init() {
 
   $("whatsappBtn").addEventListener("click", () => {
   const text = encodeURIComponent(buildShareText(calculate()));
-  window.location.href = `https://wa.me/?text=${text}`;
+  const url = `https://wa.me/?text=${text}`;
+  window.location.href = url;
 });
 
   renderExtras();
