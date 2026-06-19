@@ -661,6 +661,16 @@ function renderShare(c) {
   $("shareText").value = buildShareText(c);
 }
 function openMaps() {
+  const location =
+    $("freeStayLocation")?.value?.trim() ||
+    "Valencia de Don Juan, León";
+
+  const url =
+    `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(location)}`;
+
+  window.open(url, "_blank", "noopener,noreferrer");
+}
+function openMaps() {
   const location = $("freeStayLocation").value.trim() || "Valencia de Don Juan, León";
   const url = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(location)}`;
   window.open(url, "_blank", "noopener,noreferrer");
