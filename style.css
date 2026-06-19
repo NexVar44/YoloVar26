@@ -884,8 +884,11 @@ background: #25653f;
 }
 
 .option-card input[type="radio"]:checked + span::before {
-  content: "✓ Seleccionado";
+  content: "✓ SELECCIONADO";
   display: inline-block;
+  align-self: center;
+  width: fit-content;
+  text-align: center;
   margin-bottom: 8px;
   padding: 4px 10px;
   border-radius: 999px;
