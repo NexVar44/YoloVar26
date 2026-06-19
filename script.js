@@ -211,16 +211,6 @@ function getOtherCosts() {
   };
 }
 
-    return sum + amount;
-  }, 0);
-
-  return {
-    tolls: Math.max(readNumber("tollsCost", 0), 0),
-    contingency: Math.max(readNumber("contingencyCost", 0), 0),
-    extras: extrasCost
-  };
-}
-
 function calculateForDays(days) {
   const adults = Math.max(Math.round(readNumber("adults", 5)), 1);
   const children = Math.max(Math.round(readNumber("children", 2)), 0);
