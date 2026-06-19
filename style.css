@@ -821,3 +821,38 @@ transition: 0.2s ease;
 .vehicle-link-btn {
 background: #25653f;
 }
+
+.extra-row {
+  margin-bottom: 18px;
+}
+
+.icon-btn {
+  min-height: 46px;
+  border: 2px solid rgba(31, 77, 56, 0.35);
+  border-radius: var(--radius-md);
+  background: transparent;
+  color: var(--forest-dark);
+  font-size: 18px;
+  font-weight: 900;
+  cursor: pointer;
+}
+
+.icon-btn:hover {
+  background: var(--green-bg);
+}
+
+.add-extra-button {
+  margin-top: 18px;
+}
+
+#stayFreeFields label {
+  margin-top: 14px;
+}
+
+#stayFreeFields input {
+  margin-top: 8px;
+}
+
+#stayFreeFields .maps-button {
+  margin-top: 18px;
+}
