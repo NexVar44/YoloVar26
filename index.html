@@ -95,15 +95,10 @@
           </div>
 
           <div id="selectedVehicleBox" class="sub-card">
-            <p class="helper-text">
-              La autocaravana seleccionada exige una reserva mínima de 3 días.
-            </p>
-            <input type="hidden" name="tripDays" value="3" checked>
-            <div class="reference-box">
-              <span>Duración:</span>
-              <strong>3 días / 2 noches</strong>
-            </div>
-          </div>
+  <p class="helper-text">
+    La Siena 435 7 plazas exige una reserva mínima de 3 días.
+  </p>
+</div>
 
          <div id="otherVehicleBox" class="sub-card" hidden>
   <label>
@@ -111,15 +106,10 @@
     <input id="otherVehicleName" type="text" placeholder="Ejemplo: Autocaravana alternativa investigada">
   </label>
 
-  <label>
-    Enlace del anuncio
-    <input id="otherVehicleUrl" type="url" placeholder="https://...">
-  </label>
-
   <div class="mini-grid">
     <label>
       Días de alquiler
-      <input id="otherTripDaysInput" type="number" min="1" max="10" step="1" value="2">
+      <input id="otherTripDaysInput" type="number" min="1" max="10" step="1" value="3">
     </label>
 
     <label>
@@ -329,17 +319,17 @@
               <div class="mini-grid">
                 <label>
                   Adulto/noche (€)
-                  <input id="campingAdultNight" type="number" min="0" step="0.01" value="7.75">
+                  <input id="campingAdultNight" type="number" min="0" step="0.01" value="0">
                 </label>
 
                 <label>
                   Niño/noche (€)
-                  <input id="campingChildNight" type="number" min="0" step="0.01" value="6">
+                  <input id="campingChildNight" type="number" min="0" step="0.01" value="0">
                 </label>
 
                 <label>
                   Parking/noche (€)
-                  <input id="rvParkingNight" type="number" min="0" step="0.01" value="12">
+                  <input id="rvParkingNight" type="number" min="0" step="0.01" value="0">
                 </label>
               </div>
             </div>
