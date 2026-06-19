@@ -165,9 +165,9 @@ function getStayValues() {
     return {
       mode: "free",
       typeLabel: "Gratuito",
-      adultNight: 0,
-      childNight: 0,
-      rvParking: 0,
+      adultNight: Math.max(readNumber("campingAdultNight", 0), 0),
+      childNight: Math.max(readNumber("campingChildNight", 0), 0),
+      rvParking: Math.max(readNumber("rvParkingNight", 0), 0),
       manualName: "",
       manualLocation: "",
       freeName: $("freeStayName").value.trim(),
