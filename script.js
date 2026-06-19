@@ -15,6 +15,9 @@ const INSURANCE = {
   basic: { name: "Seguro básico", daily: 6, deposit: 1500 },
   comfort: { name: "Seguro confort", daily: 11.99, deposit: 750 }
 };
+function getInsurance() {
+  return INSURANCE[selectedRadio("insurancePlan", "comfort")] || INSURANCE.comfort;
+}
 
 let currentStep = 1;
 let selectedPreset = "manual";
@@ -656,6 +659,11 @@ function renderResults(c) {
 
 function renderShare(c) {
   $("shareText").value = buildShareText(c);
+}
+function openMaps() {
+  const location = $("freeStayLocation").value.trim() || "Valencia de Don Juan, León";
+  const url = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(location)}`;
+  window.open(url, "_blank", "noopener,noreferrer");
 }
 
 function openManualMaps() {
