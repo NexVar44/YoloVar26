@@ -657,8 +657,42 @@ function renderResults(c) {
   $("depositResultTitle").textContent = `Fianza bloqueada: ${money(c.insurance.deposit)}`;
 }
 
-function renderShare(c) {
-  $("shareText").value = buildShareText(c);
+function buildShareText(c) {
+  return [
+    "Presupuesto estimado YoloVar26",
+    "",
+    `Total sin fianza: ${money(c.total)}`,
+    `Fianza bloqueada: ${money(c.depositAmount || c.insurance.deposit)}`,
+    "",
+    `Opción A: ${money(c.sharedAdultCost)} por adulto`,
+    "Niños repartidos entre todos los adultos.",
+    "",
+    `Opción B adulto sin niño: ${money(c.adultWithoutChild)}`,
+    `Opción B adulto con niño: ${money(c.adultWithOneChild)}`,
+    "",
+    "Datos del viaje:",
+    `Autocaravana: ${c.vehicleName}`,
+    `Duración: ${c.days} días / ${c.nights} noche${c.nights === 1 ? "" : "s"}`,
+    `Adultos: ${c.adults}`,
+    `Niños: ${c.children}`,
+    `Seguro: ${c.insurance.name}`,
+    "",
+    "Gastos principales:",
+    `Alquiler: ${money(c.rental)}`,
+    `Seguro: ${money(c.insuranceCost)}`,
+    `Combustible: ${money(c.fuel)}`,
+    `Comidas adultos: ${money(c.adultFoodCost)}`,
+    `Comidas niños: ${money(c.childFoodCost)}`,
+    `Pernocta adultos: ${money(c.adultStayCost)}`,
+    `Pernocta niños: ${money(c.childStayCost)}`,
+    `Parking: ${money(c.parkingCost)}`,
+    `Peajes: ${money(c.other.tolls)}`,
+    `Imprevistos: ${money(c.other.contingency)}`,
+    ...(c.other.extraItems || []).map((item) => {
+      const mode = item.mode === "person" ? "por persona" : "total viaje";
+      return `${item.name || "Gasto extra"} (${mode}): ${money(item.total)}`;
+    })
+  ].join("\n");
 }
 function openMaps() {
   const location =
@@ -752,8 +786,7 @@ function init() {
 
   $("whatsappBtn").addEventListener("click", () => {
   const text = encodeURIComponent(buildShareText(calculate()));
-  const url = `https://wa.me/?text=${text}`;
-  window.location.href = url;
+  window.location.href = `https://wa.me/?text=${text}`;
 });
 
   renderExtras();
