@@ -28,12 +28,12 @@ function money(value) {
   const number = Number(value || 0);
   const hasDecimals = !Number.isInteger(number);
 
-  return new Intl.NumberFormat("es-ES", {
-    style: "currency",
-    currency: "EUR",
+  const formatted = number.toLocaleString("de-DE", {
     minimumFractionDigits: hasDecimals ? 2 : 0,
     maximumFractionDigits: hasDecimals ? 2 : 0
-  }).format(number);
+  });
+
+  return `${formatted} €`;
 }
 
 function readNumber(id, fallback = 0) {
