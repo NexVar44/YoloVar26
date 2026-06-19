@@ -408,7 +408,7 @@ function goToStep(step, shouldScroll = true) {
   render();
 
   if (shouldScroll) {
-    $("app").scrollIntoView({
+    document.querySelector(".app-header").scrollIntoView({
       behavior: "smooth",
       block: "start"
     });
