@@ -937,3 +937,8 @@ background: #25653f;
 .extra-amount-wrapper input {
   margin-top: 0;
 }
+
+#stayManualFields .maps-button {
+  margin-top: 18px;
+  margin-bottom: 16px;
+}
