@@ -441,51 +441,52 @@ function renderExtras() {
 
   list.innerHTML = extras.map((item, index) => `
     <div class="extra-row">
-  <input type="text" value="${escapeHtml(item.name)}" placeholder="Nombre del gasto extra" data-extra-index="${index}" data-extra-field="name">
+      <input type="text" value="${escapeHtml(item.name)}" placeholder="Nombre del gasto extra" data-extra-index="${index}" data-extra-field="name">
 
- <div class="extra-amount-wrapper">
-  <small>Importe (€)</small>
-  <input type="number" min="0" step="0.01" value="${Number(item.amount || 0)}" placeholder="Ejemplo: 5" data-extra-index="${index}" data-extra-field="amount">
-</div>
+      <div class="extra-amount-wrapper">
+        <small>Importe (€)</small>
+        <input type="number" min="0" step="0.01" value="${Number(item.amount || 0)}" placeholder="Ejemplo: 5" data-extra-index="${index}" data-extra-field="amount">
+      </div>
 
-  <select data-extra-index="${index}" data-extra-field="mode">
-    <option value="trip" ${item.mode === "trip" ? "selected" : ""}>Sumarse una sola vez al viaje</option>
-    <option value="person" ${item.mode === "person" ? "selected" : ""}>Sumarse a cada persona del viaje</option>
-  </select>
+      <select data-extra-index="${index}" data-extra-field="mode">
+        <option value="trip" ${item.mode === "trip" ? "selected" : ""}>Sumarse una sola vez al viaje</option>
+        <option value="person" ${item.mode === "person" ? "selected" : ""}>Sumarse a cada persona del viaje</option>
+      </select>
 
-  <button class="icon-btn" type="button" data-remove-extra="${index}">×</button>
-</div>
+      <button class="icon-btn" type="button" data-remove-extra="${index}">×</button>
+    </div>
   `).join("");
 
   list.querySelectorAll("[data-extra-index]").forEach((input) => {
     input.addEventListener("input", function () {
-  const index = Number(this.dataset.extraIndex);
-  const field = this.dataset.extraField;
+      const index = Number(this.dataset.extraIndex);
+      const field = this.dataset.extraField;
 
-  if (!extras[index]) return;
+      if (!extras[index]) return;
 
-  extras[index][field] = field === "amount" ? Number(this.value || 0) : this.value;
-  render();
-});
+      extras[index][field] = field === "amount" ? Number(this.value || 0) : this.value;
+      render();
+    });
+
+    input.addEventListener("change", function () {
+      const index = Number(this.dataset.extraIndex);
+      const field = this.dataset.extraField;
+
+      if (!extras[index]) return;
+
+      extras[index][field] = field === "amount" ? Number(this.value || 0) : this.value;
+      render();
+    });
+
     if (input.type === "number") {
-  input.addEventListener("focus", function () {
-    this.select();
-  });
+      input.addEventListener("focus", function () {
+        this.select();
+      });
 
-  input.addEventListener("click", function () {
-    this.select();
-  });
-}
-
-input.addEventListener("change", function () {
-  const index = Number(this.dataset.extraIndex);
-  const field = this.dataset.extraField;
-
-  if (!extras[index]) return;
-
-  extras[index][field] = field === "amount" ? Number(this.value || 0) : this.value;
-  render();
-});
+      input.addEventListener("click", function () {
+        this.select();
+      });
+    }
   });
 
   list.querySelectorAll("[data-remove-extra]").forEach((button) => {
