@@ -269,6 +269,7 @@ function calculateForDays(days) {
     children,
     people,
     vehicleName: getVehicleName(),
+    vehicleUrl: getVehicleUrl(),
     vehicleMode: getVehicleMode(),
     insurance,
     rental,
@@ -548,7 +549,7 @@ function getBreakdownSections(c) {
       title: "Desglose completo",
       rows: [
         ["Autocaravana", c.vehicleName],
-        ["Anuncio autocaravana", getVehicleUrl()],
+        ["Anuncio autocaravana", c.vehicleUrl],
         ["Duración", `${c.days} días / ${c.nights} noche${c.nights === 1 ? "" : "s"}`],
         ["Adultos", c.adults],
         ["Niños", c.children],
