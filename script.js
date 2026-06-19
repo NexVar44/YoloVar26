@@ -78,12 +78,12 @@ function getVehicleMode() {
 
 function getDays() {
   if (getVehicleMode() === "selected") return 3;
-  return 2;
+  return Number(selectedRadio("otherTripDays", "2"));
 }
 
 function getRental(days) {
   if (getVehicleMode() === "selected") return SELECTED_RENTAL_3_DAYS;
-  return Math.max(readNumber("otherRentalTotal", 0), 0);
+  return Math.max(readNumber("otherRentalDay", 0), 0) * days;
 }
 
 function getVehicleName() {
@@ -328,8 +328,8 @@ function validateStep1() {
   }
 
   if (getVehicleMode() === "other") {
-  if (readNumber("otherRentalTotal", 0) <= 0) {
-    $("otherRentalTotal").classList.add("invalid");
+  if (readNumber("otherRentalDay", 0) <= 0) {
+    $("otherRentalDay").classList.add("invalid");
     valid = false;
   }
 }
