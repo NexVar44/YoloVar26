@@ -169,14 +169,16 @@ function getStayValues() {
 
   if (mode === "manual") {
     return {
-      mode,
-      typeLabel: "Manual",
-      adultNight: Math.max(readNumber("campingAdultNight", REFERENCE.campingAdult), 0),
-      childNight: Math.max(readNumber("campingChildNight", REFERENCE.campingChild), 0),
-      rvParking: Math.max(readNumber("rvParkingNight", REFERENCE.rvParking), 0),
-      freeName: "",
-      freeLocation: ""
-    };
+  mode,
+  typeLabel: "Manual",
+  adultNight: Math.max(readNumber("campingAdultNight", REFERENCE.campingAdult), 0),
+  childNight: Math.max(readNumber("campingChildNight", REFERENCE.campingChild), 0),
+  rvParking: Math.max(readNumber("rvParkingNight", REFERENCE.rvParking), 0),
+  manualName: $("manualStayName").value.trim(),
+  manualLocation: $("manualStayLocation").value.trim(),
+  freeName: "",
+  freeLocation: ""
+};
   }
 
   return {
