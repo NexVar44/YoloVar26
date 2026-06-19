@@ -533,15 +533,6 @@ function getBreakdownSections(c) {
 
   return [
     {
-      title: "Resultado",
-      rows: [
-        ["Total estimado sin fianza", money(c.total)],
-        ["Opción A · coste por adulto", money(c.sharedAdultCost)],
-        ["Opción B · adulto sin niño", money(c.adultWithoutChild)],
-        ["Opción B · adulto con niño", money(c.adultWithOneChild)]
-      ]
-    },
-    {
       title: "Distribución del coste",
       rows: [
         ["Grupo", `${c.adults} adulto(s) y ${c.children} niño(s)`],
