@@ -398,8 +398,6 @@ function renderDepositIntro() {
   $("depositIntroTitle").textContent = `Fianza bloqueada según ${insurance.name}: ${money(insurance.deposit)}`;
 }
 
-  const preset = PRESETS[selectedPreset] || PRESETS.medium;
-
   detail.innerHTML = `
     <strong>${preset.label}</strong>
     <ul>
