@@ -23,10 +23,15 @@ function $(id) {
 }
 
 function money(value) {
+  const number = Number(value || 0);
+  const hasDecimals = !Number.isInteger(number);
+
   return new Intl.NumberFormat("es-ES", {
     style: "currency",
-    currency: "EUR"
-  }).format(Number(value || 0));
+    currency: "EUR",
+    minimumFractionDigits: hasDecimals ? 2 : 0,
+    maximumFractionDigits: hasDecimals ? 2 : 0
+  }).format(number);
 }
 
 function readNumber(id, fallback = 0) {
@@ -146,7 +151,7 @@ function getStayValues() {
   if (mode === "free") {
     return {
       mode,
-      typeLabel: "Gratuita",
+      typeLabel: "Gratuito",
       adultNight: 0,
       childNight: 0,
       rvParking: 0,
@@ -179,15 +184,32 @@ function getStayValues() {
 }
 
 function getOtherCosts() {
-  const people = Math.max(readNumber("adults", 5), 1) + Math.max(readNumber("children", 2), 0);
+  const adults = Math.max(Math.round(readNumber("adults", 5)), 1);
+  const children = Math.max(Math.round(readNumber("children", 2)), 0);
+  const people = adults + children;
 
-  const extrasCost = extras.reduce((sum, item) => {
+  const extraItems = extras.map((item) => {
     const amount = Math.max(Number(item.amount || 0), 0);
     const mode = item.mode || "trip";
+    const total = mode === "person" ? amount * people : amount;
 
-    if (mode === "person") {
-      return sum + (amount * people);
-    }
+    return {
+      name: item.name || "Gasto extra",
+      amount,
+      mode,
+      total
+    };
+  });
+
+  const extrasCost = extraItems.reduce((sum, item) => sum + item.total, 0);
+
+  return {
+    tolls: Math.max(readNumber("tollsCost", 0), 0),
+    contingency: Math.max(readNumber("contingencyCost", 0), 0),
+    extras: extrasCost,
+    extraItems
+  };
+}
 
     return sum + amount;
   }, 0);
@@ -468,26 +490,37 @@ function addExtra() {
 }
 
 function getBreakdownSections(c) {
-  const sections = [
-    {
-      title: "Datos del viaje",
-      rows: [
-        ["Autocaravana", c.vehicleName],["Anuncio autocaravana", "https://www.camplify.es/rv/17531?startDate=2026-07-10&endDate=2026-07-12&hireType=4&excessReductionId=208"],
-        ["Duración", `${c.days} días / ${c.nights} noche${c.nights === 1 ? "" : "s"}`],
-        ["Adultos", c.adults],
-        ["Niños", c.children],
-        ["Seguro seleccionado", c.insurance.name],
-        ["Fianza bloqueada", money(c.insurance.deposit)]
-      ]
-    },
+  const extraRows = (c.other.extraItems || []).map((item) => {
+    const modeLabel = item.mode === "person" ? "por persona" : "total viaje";
+    return [`${item.name} (${modeLabel})`, money(item.total)];
+  });
+
+  const pernoctaRows = [];
+
+  if (c.stay.mode === "free") {
+    pernoctaRows.push(["Tipo", "Gratuito"]);
+    pernoctaRows.push(["Lugar", c.stay.freeName || "No indicado"]);
+    pernoctaRows.push(["Ubicación", c.stay.freeLocation || "No indicada"]);
+  } else if (c.stay.mode === "manual") {
+    pernoctaRows.push(["Tipo", "Manual"]);
+    pernoctaRows.push(["Adulto/noche", money(c.stay.adultNight)]);
+    pernoctaRows.push(["Niño/noche", money(c.stay.childNight)]);
+    pernoctaRows.push(["Parking/noche", money(c.stay.rvParking)]);
+  } else {
+    pernoctaRows.push(["Camping", "Camping Pico Verde"]);
+    pernoctaRows.push(["Dirección", "Carretera Mayorga Astorga, Km 27,6 · 24200 Valencia de Don Juan, León"]);
+    pernoctaRows.push(["Web camping", "https://www.verial.es/campingpicoverde/"]);
+    pernoctaRows.push(["Ubicación", "https://maps.app.goo.gl/y4dFhqsELfTtnaQN7"]);
+  }
+
+  return [
     {
       title: "Resultado",
       rows: [
         ["Total estimado sin fianza", money(c.total)],
         ["Opción A · coste por adulto", money(c.sharedAdultCost)],
         ["Opción B · adulto sin niño", money(c.adultWithoutChild)],
-        ["Opción B · adulto con 1 niño", money(c.adultWithOneChild)],
-        ["Opción B · adulto con 2 niños", money(c.adultWithTwoChildren)]
+        ["Opción B · adulto con niño", money(c.adultWithOneChild)]
       ]
     },
     {
@@ -511,40 +544,27 @@ function getBreakdownSections(c) {
         ["Parking autocaravana", money(c.parkingCost)],
         ["Peajes", money(c.other.tolls)],
         ["Imprevistos", money(c.other.contingency)],
-        ["Gastos extra", money(c.other.extras)]
+        ...extraRows
+      ]
+    },
+    {
+      title: "Desglose completo",
+      rows: [
+        ["Autocaravana", c.vehicleName],
+        ["Anuncio autocaravana", "https://www.camplify.es/rv/17531?startDate=2026-07-10&endDate=2026-07-12&hireType=4&excessReductionId=208"],
+        ["Duración", `${c.days} días / ${c.nights} noche${c.nights === 1 ? "" : "s"}`],
+        ["Adultos", c.adults],
+        ["Niños", c.children],
+        ["Seguro seleccionado", c.insurance.name],
+        ["Fianza bloqueada", money(c.insurance.deposit)]
       ]
     },
     {
       title: "Pernocta seleccionada",
-      rows: [
-        ["Camping", c.stay.typeLabel],
-        ["Dirección", "Carretera Mayorga Astorga, Km 27,6 · 24200 Valencia de Don Juan, León"],
-        ["Web camping", "https://www.verial.es/campingpicoverde/"],
-        ["Ubicación", "https://maps.app.goo.gl/y4dFhqsELfTtnaQN7"]
-      ]
+      rows: pernoctaRows
     }
   ];
-
-  if (c.stay.mode === "free") {
-    sections[4].rows.push(["Lugar", c.stay.freeName || "No indicado"]);
-    sections[4].rows.push(["Ubicación", c.stay.freeLocation || "No indicada"]);
-  }
-
-  if (c.stay.mode === "manual") {
-    sections[4].rows.push(["Adulto/noche", money(c.stay.adultNight)]);
-    sections[4].rows.push(["Niño/noche", money(c.stay.childNight)]);
-    sections[4].rows.push(["Parking/noche", money(c.stay.rvParking)]);
-  }
-
-  if (extras.length > 0 && selectedPreset === "manual") {
-    sections.push({
-      title: "Gastos extra introducidos",
-      rows: extras.map((item) => [
-        item.name || "Gasto extra",
-        money(item.amount)
-      ])
-    });
-  }
+}
 
   return sections;
 }
@@ -576,13 +596,13 @@ if (label === "Web camping" && isValidUrl(value)) {
 }
 
 if (label === "Ubicación" && isValidUrl(value)) {
-        return `
-          <div class="break-row">
-            <span>${safeLabel}</span>
-            <a href="${safeValue}" target="_blank" rel="noopener noreferrer">Ver ubicación en Google Maps</a>
-          </div>
-        `;
-      }
+  return `
+    <div class="break-row">
+      <span>${safeLabel}</span>
+      <a href="${safeValue}" target="_blank" rel="noopener noreferrer">Ver ubicación en Google Maps</a>
+    </div>
+  `;
+}
 
       return `
         <div class="break-row">
