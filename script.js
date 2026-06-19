@@ -467,6 +467,15 @@ function renderExtras() {
   extras[index][field] = field === "amount" ? Number(this.value || 0) : this.value;
   render();
 });
+    if (input.type === "number") {
+  input.addEventListener("focus", function () {
+    this.select();
+  });
+
+  input.addEventListener("click", function () {
+    this.select();
+  });
+}
 
 input.addEventListener("change", function () {
   const index = Number(this.dataset.extraIndex);
