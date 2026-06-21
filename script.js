@@ -409,8 +409,8 @@ function goToStep(step, shouldScroll = true) {
 
   if (shouldScroll) {
   setTimeout(scrollToAppStart, 100);
-}
-  
+  }
+}  
 function renderVehicleVisibility() {
   const mode = getVehicleMode();
 
