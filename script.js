@@ -421,6 +421,11 @@ function renderVehicleVisibility() {
 
   $("selectedVehicleBox").hidden = mode !== "selected";
   $("otherVehicleBox").hidden = mode !== "other";
+
+  const insuranceCard = $("insuranceCard");
+  if (insuranceCard) {
+    insuranceCard.hidden = mode === "other";
+  }
 }
 
 function renderDepositIntro() {
