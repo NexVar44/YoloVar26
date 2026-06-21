@@ -720,7 +720,6 @@ function render() {
 
   renderResults(c);
   renderBreakdown(c);
-  renderShare(c);
 }
 
 function init() {
