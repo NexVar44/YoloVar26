@@ -407,8 +407,10 @@ function goToStep(step, shouldScroll = true) {
 
   render();
 
-  if (shouldScroll) {
-  setTimeout(scrollToAppStart, 100);
+ if (shouldScroll) {
+  setTimeout(() => {
+    scrollToAppStart();
+  }, 250);
   }
 }  
 function renderVehicleVisibility() {
@@ -745,7 +747,11 @@ function init() {
   });
 
   function scrollToAppStart() {
-  $("app").scrollIntoView({
+  const target = document.querySelector(".app-shell");
+
+  if (!target) return;
+
+  target.scrollIntoView({
     behavior: "smooth",
     block: "start"
   });
