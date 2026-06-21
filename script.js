@@ -408,14 +408,9 @@ function goToStep(step, shouldScroll = true) {
   render();
 
   if (shouldScroll) {
-  setTimeout(() => {
-    document.getElementById("app").scrollIntoView({
-      behavior: "smooth",
-      block: "start"
-    });
-  }, 150);
+  setTimeout(scrollToAppStart, 100);
 }
-}
+  
 function renderVehicleVisibility() {
   const mode = getVehicleMode();
 
@@ -750,12 +745,14 @@ function init() {
     btn.addEventListener("click", () => goToStep(Number(btn.dataset.step), false));
   });
 
-  $("startBtn").addEventListener("click", () => {
-    $("app").scrollIntoView({
-      behavior: "smooth",
-      block: "start"
-    });
+  function scrollToAppStart() {
+  $("app").scrollIntoView({
+    behavior: "smooth",
+    block: "start"
   });
+}
+
+$("startBtn").addEventListener("click", scrollToAppStart);
 
   $("step1NextBtn").addEventListener("click", () => goToStep(2, true));
   $("step2BackBtn").addEventListener("click", () => goToStep(1, true));
