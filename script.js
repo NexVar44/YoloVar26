@@ -779,7 +779,9 @@ $("startBtn").addEventListener("click", scrollToAppStart);
   $("step1NextBtn").addEventListener("click", () => goToStep(2, true));
   $("step2BackBtn").addEventListener("click", () => goToStep(1, true));
   $("step2NextBtn").addEventListener("click", () => goToStep(3, true));
-  $("restartNavBtn").addEventListener("click", resetSimulation);
+  $("restartNavBtn").addEventListener("click", () => {
+  window.location.href = window.location.pathname + "?reset=" + Date.now();
+});
 
   $("addExtraBtn").addEventListener("click", addExtra);
   $("mapsBtn").addEventListener("click", openMaps);
