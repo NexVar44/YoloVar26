@@ -551,7 +551,7 @@ function getBreakdownSections(c) {
     {
   title: "Distribución del coste",
   rows: [
-    ["Grupo", `${c.adults} adulto(s) y ${c.children} niño(s)`]
+    ["Total de viajeros", `${c.adults} adulto(s) y ${c.children} niño(s)`]
   ]
 },
     {
@@ -578,7 +578,13 @@ function getBreakdownSections(c) {
         ["Duración", `${c.days} días / ${c.nights} noche${c.nights === 1 ? "" : "s"}`],
         ["Adultos", c.adults],
         ["Niños", c.children],
-        ["Seguro seleccionado", c.insurance.name],
+        ["Seguro seleccionado",
+  c.vehicleMode === "selected"
+    ? c.insurance.name
+    : c.insuranceCost > 0
+      ? `Seguro alternativo: ${money(c.insuranceCost)}`
+      : "No indicado"
+],
         ["Fianza bloqueada", money(c.depositAmount)]
       ]
     },
