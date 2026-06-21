@@ -731,6 +731,9 @@ function render() {
   renderResults(c);
   renderBreakdown(c);
 }
+function resetSimulation() {
+  location.reload();
+}
 
 function init() {
   $("selectedRental3Label").textContent = money(SELECTED_RENTAL_3_DAYS);
@@ -770,7 +773,7 @@ $("startBtn").addEventListener("click", scrollToAppStart);
   $("step1NextBtn").addEventListener("click", () => goToStep(2, true));
   $("step2BackBtn").addEventListener("click", () => goToStep(1, true));
   $("step2NextBtn").addEventListener("click", () => goToStep(3, true));
-  $("restartNavBtn").addEventListener("click", () => goToStep(1, true));
+  $("restartNavBtn").addEventListener("click", resetSimulation);
 
   $("addExtraBtn").addEventListener("click", addExtra);
   $("mapsBtn").addEventListener("click", openMaps);
