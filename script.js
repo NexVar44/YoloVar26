@@ -401,18 +401,21 @@ function goToStep(step, shouldScroll = true) {
   currentStep = Math.min(Math.max(step, 1), 3);
   updateStepState();
 
-  if (currentStep === 3) {
+  if (currentStep === 3 && $("sharePanel")) {
     $("sharePanel").hidden = true;
   }
 
   render();
 
- if (shouldScroll) {
-  setTimeout(() => {
-    scrollToAppStart();
-  }, 250);
+  if (shouldScroll) {
+    setTimeout(() => {
+      $("app").scrollIntoView({
+        behavior: "smooth",
+        block: "start"
+      });
+    }, 100);
   }
-}  
+} 
 function renderVehicleVisibility() {
   const mode = getVehicleMode();
 
